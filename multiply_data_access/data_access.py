@@ -5,14 +5,16 @@ Description
 
 This module contains the MULTIPLY data access API.
 """
+import pyproj
 
 from abc import ABCMeta, abstractmethod
 from typing import List, Sequence, Optional
-from datetime import datetime, timedelta
-from multiply_core.util import FileRef, are_times_equal, are_polygons_almost_equal, get_time_from_string
+from datetime import datetime
+from multiply_core.util import FileRef, are_times_equal, are_polygons_almost_equal, get_time_from_string, \
+    reproject_to_wgs84
+from multiply_core.observations import differs_by_name, get_relative_path
 from shapely.wkt import loads
 from shapely.geometry import Polygon
-import os
 
 __author__ = 'Alexander Löw (Ludwig Maximilians-Universität München), ' \
              'Tonio Fincke (Brockmann Consult GmbH)'
@@ -72,8 +74,20 @@ class DataSetMetaInfo(object):
         return self._referenced_data
 
     def equals(self, other: object) -> bool:
-        """Checks whether two data set meta infos are equal. Does not check the identifier or referenced data sets!"""
-        return type(other) == DataSetMetaInfo and self._data_type == other.data_type and \
+        """Checks whether two data set meta infos are equal. Does not check for referenced data sets. Only checks for
+        the identifier if two different items must always carry different names."""
+        equals = self.equals_except_data_type(other) and self._data_type == other.data_type
+        if equals and differs_by_name(self._data_type):
+            equals = self._identifier.split('/')[-1] == other.identifier.split('/')[-1]
+            relative_path = get_relative_path(self._identifier, self._data_type)
+            other_relative_path = get_relative_path(other.identifier, other.data_type)
+            equals = equals and relative_path == other_relative_path
+        return equals
+
+    def equals_except_data_type(self, other: object) -> bool:
+        """Checks whether two data set meta infos are equal, except that they may have the same data type.
+        Does not check the identifier or referenced data sets!"""
+        return type(other) == DataSetMetaInfo and \
             are_times_equal(self._start_time, other.start_time) and \
             are_times_equal(self._end_time, other.end_time) and \
             are_polygons_almost_equal(self.coverage, other.coverage)
@@ -127,6 +141,13 @@ class FileSystem(metaclass=ABCMeta):
     def scan(self) -> Sequence[DataSetMetaInfo]:
         """Retrieves a sequence of data set meta informations of all file refs found in the file system."""
 
+    @abstractmethod
+    def clear_cache(self):
+        """
+        Removes any cached data that this file system might hold.
+        :return:
+        """
+
 
 class FileSystemAccessor(metaclass=ABCMeta):
 
@@ -157,11 +178,27 @@ class MetaInfoProvider(metaclass=ABCMeta):
         """
 
     @abstractmethod
+    def query_local(self, query_string: str) -> List[DataSetMetaInfo]:
+        """
+        Processes a query and retrieves a result. The result will consist of all the data sets that satisfy the query
+        that do not require to be downloaded.
+        :return: A list of meta information about data sets that fulfill the query.
+        """
+
+    @abstractmethod
+    def query_non_local(self, query_string: str) -> List[DataSetMetaInfo]:
+        """
+        Processes a query and retrieves a result. The result will consist of all the data sets that satisfy the query
+        that must be downloaded first.
+        :return: A list of meta information about data sets that fulfill the query.
+        """
+
+    @abstractmethod
     def provides_data_type(self, data_type: str) -> bool:
         """
-        Whether the mete info provider provides access to data of the queried type
+        Whether the meta info provider provides access to data of the queried type
         :param data_type: A string labelling the data
-        :return: True if data of that type can be requested from the meta infor provider
+        :return: True if data of that type can be requested from the meta info provider
         """
 
     @abstractmethod
@@ -170,12 +207,29 @@ class MetaInfoProvider(metaclass=ABCMeta):
         :return: A list of the data types provided by this data store.
         """
 
+    @abstractmethod
+    def encapsulates_data_type(self, data_type: str) -> bool:
+        """
+        Whether the meta info provider provides encapsulated access to data of the queried type. Data access is
+        considered encapsulated when the data is not provided directly from the meta info provider, but indirectly by
+        requesting a provided data type which in some form relies on the encapsulated data.
+        :param data_type: A string labelling the data
+        :return: True if data of that type is encapsulated by one of the meta infor provider's provided data types.
+        """
+
     @staticmethod
     def get_roi_from_query_string(query_string: str) -> Optional[Polygon]:
-        roi_as_wkt = query_string.split(';')[0]
+        split_query_string = query_string.split(';')
+        roi_as_wkt = split_query_string[0]
         if roi_as_wkt == '':
             return None
-        roi = loads(roi_as_wkt)
+        if len(split_query_string) == 4:
+            roi = loads(roi_as_wkt)
+        else:
+            roi_grid = split_query_string[4]
+            roi = reproject_to_wgs84(roi_as_wkt, roi_grid)
+            roi = loads(roi)
+        # todo also allow MultiPolygons
         if not isinstance(roi, Polygon):
             raise ValueError('ROI must be a polygon')
         return roi

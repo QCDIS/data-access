@@ -63,17 +63,6 @@ def test_lpdaac_meta_info_provider_get_id_ranges():
     assert [5, 6] == v_range_2
 
 
-def test_lpdaac_meta_info_provider__get_tile_coverage():
-    parameters = {'path_to_json_file': path_to_json_file}
-    provider = LpDaacMetaInfoProviderAccessor.create_from_parameters(parameters)
-
-    coverage = provider._get_tile_coverage(17, 5)
-    tile_polygon = loads(H17_V05_COVERAGE)
-
-    assert coverage is not None
-    assert coverage.almost_equals(tile_polygon)
-
-
 # commented this test, as lpdaac did not like to be queried frequently
 # def test_query():
 #     parameters = {'path_to_json_file': path_to_json_file}

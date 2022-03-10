@@ -1,18 +1,29 @@
-from nose.tools import assert_equal
 from multiply_data_access import MetaInfoProvider
+from shapely.wkt import loads
 
 __author__ = "Tonio Fincke (Brockmann Consult GmbH)"
 
 
 def test_meta_info_provider_get_roi_from_query_string():
-    query_string = 'POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10));;'
+    query_string = 'POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10));;;;EPSG:4326'
     roi = MetaInfoProvider.get_roi_from_query_string(query_string)
     assert roi.geom_type == 'Polygon'
 
     try:
-        MetaInfoProvider.get_roi_from_query_string('POINT (0 0);;')
+        MetaInfoProvider.get_roi_from_query_string('POINT (0 0);;;;EPSG:4326')
     except ValueError:
         assert True
+
+
+def test_meta_info_provider_get_roi_from_query_string_other_srs():
+    query_string = 'POLYGON((685700. 6462200., 685700. 6470700., 697660. 6470700., 697660. 6462200., 685700. 6462200.))' \
+                   ';;;;EPSG:3301'
+    roi = MetaInfoProvider.get_roi_from_query_string(query_string)
+    assert roi.geom_type == 'Polygon'
+    expected_roi = loads('POLYGON ((27.1647563115467534 58.2611263320005577, 27.1716005869326196 58.3373581174386473, '
+                         '27.3755330955532621 58.3321196269764286, 27.3682501734918766 58.2558991181697223, '
+                         '27.1647563115467534 58.2611263320005577))')
+    assert roi.almost_equals(expected_roi)
 
 
 def test_meta_info_provider_get_start_time_from_string():
@@ -149,9 +160,9 @@ def test_meta_info_provider_get_data_types():
     query_string = ';;;SLSTR L1B, Era-Interim, S2A MSI'
     data_types = MetaInfoProvider.get_data_types_from_query_string(query_string)
     assert len(data_types) == 3
-    assert_equal(data_types, ['SLSTR L1B', 'Era-Interim', 'S2A MSI'])
+    # assert data_types, ['SLSTR L1B', 'Era-Interim', 'S2A MSI']
+    assert all([a == b for a, b in zip(data_types, ['SLSTR L1B', 'Era-Interim', 'S2A MSI'])])
 
     query_string = ';;;'
     data_types = MetaInfoProvider.get_data_types_from_query_string(query_string)
     assert len(data_types) == 0
-    assert_equal(data_types, [])

@@ -9,7 +9,6 @@ from distutils.dir_util import copy_tree
 from multiply_core.util import FileRef, get_mime_type, get_time_from_string
 from .data_access import DataSetMetaInfo, FileSystemAccessor
 from multiply_data_access.locally_wrapped_data_access import LocallyWrappedFileSystem
-from sentinelhub import AwsTileRequest
 from typing import Optional, Sequence
 import itertools
 import logging
@@ -29,9 +28,14 @@ _NAME = 'AwsS2FileSystem'
 
 class AwsS2FileSystem(LocallyWrappedFileSystem):
 
+    def __init__(self, parameters: dict):
+        super().__init__(parameters)
+
     def _init_wrapped_file_system(self, parameters: dict):
-        if 'temp_dir' not in parameters.keys() or not os.path.exists(parameters['temp_dir']):
+        if 'temp_dir' not in parameters.keys():
             raise ValueError('No valid temporal directory provided for AWS S2 File System')
+        if not os.path.exists(parameters['temp_dir']):
+            os.makedirs(parameters['temp_dir'])
         self._temp_dir = parameters['temp_dir']
 
     @classmethod
@@ -53,6 +57,7 @@ class AwsS2FileSystem(LocallyWrappedFileSystem):
         if not self._is_valid_identifier(data_set_meta_info.identifier):
             # consider throwing an exception
             return None
+        from sentinelhub import AwsTileRequest
         tile_name = self._get_tile_name(data_set_meta_info.identifier)
         start_time_as_datetime = get_time_from_string(data_set_meta_info.start_time)
         time = start_time_as_datetime.strftime('%Y-%m-%d')
@@ -101,6 +106,10 @@ class AwsS2FileSystem(LocallyWrappedFileSystem):
     def _get_wrapped_parameters_as_dict(self) -> dict:
         parameters = {'temp_dir': self._temp_dir}
         return parameters
+
+    def clear_cache(self):
+        if os.path.exists(self._temp_dir):
+            shutil.rmtree(self._temp_dir)
 
 
 class AwsS2FileSystemAccessor(FileSystemAccessor):

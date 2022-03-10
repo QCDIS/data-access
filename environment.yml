@@ -10,8 +10,8 @@ dependencies:
   # runtime dependencies
   #
   - beautifulsoup4 = 4.6.0
-  - shapely = 1.6.2
-  - gdal = 2.2.2
+  - shapely = 1.6.4
+  - gdal = 2.3.3
   - html5lib = 1.0.1
   - pyyaml = 3.12
   - requests = 2.18.4

@@ -141,6 +141,9 @@ def test_scan():
         def is_valid_for(self, path: str, roi: Polygon, start_time: datetime, end_time: datetime) -> bool:
             return self.is_valid(path)
 
+        def differs_by_name(cls):
+            return False
+
     local_file_system = LocalFileSystem('./test/test_data/', '/dt/yy/mm/dd/')
     data_validation.add_validator(MyValidator())
 

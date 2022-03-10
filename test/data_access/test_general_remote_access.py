@@ -1,11 +1,11 @@
 __author__ = 'Tonio Fincke (Brockmann Consult GmbH)'
 
 import os
+import pytest
 from multiply_core.observations import DataTypeConstants
 from multiply_data_access.data_access import DataSetMetaInfo
 from multiply_data_access.general_remote_access import HttpFileSystem, HttpFileSystemAccessor, \
     HttpMetaInfoProvider, HttpMetaInfoProviderAccessor
-from shapely.wkt import loads
 
 PATH_TO_JSON_FILE = './test/test_data/modis_store.json'
 PATH_TO_EMUS_STORE = './test/test_data/empty_store.json'
@@ -49,25 +49,27 @@ def test_meta_info_provider_get_parameters_as_dict():
     assert 'supported_data_types' in parameters_as_dict.keys()
     assert 'MCD43A1.006,TYPE_X' == parameters_as_dict['supported_data_types']
 
-# this test is expensive. Execute to test access to elevation data
-# def test_query_wrapped_meta_info_provider_eles():
-#     parameters = {'path_to_json_file': PATH_TO_JSON_FILE, 'url': ELES_TEST_URL,
-#                   'data_types': '{}, TYPE_X'.format(DataTypeConstants.ASTER)}
-#     provider = HttpMetaInfoProviderAccessor.create_from_parameters(parameters)
-#
-#     query_string = 'POLYGON((-6.5 42.7, -6.7 42.6, -6.7 42.1, -6.5 42.1, -6.5 42.7));2017-09-04;2017-09-04;ASTER'
-#     data_set_meta_infos = provider._query_wrapped_meta_info_provider(query_string)
-#
-#     assert 1 == len(data_set_meta_infos)
-#     expected_aster_coverage = loads('POLYGON((-7. 42., -7. 43., -6. 43., -6. 42., -7. 42.))')
-#     aster_coverage = loads(data_set_meta_infos[0].coverage)
-#     assert expected_aster_coverage.almost_equals(aster_coverage)
-#     assert '' == data_set_meta_infos[0].start_time
-#     assert '' == data_set_meta_infos[0].end_time
-#     assert 'ASTER' == data_set_meta_infos[0].data_type
-#     assert 'ASTGTM2_N42W007_dem.tif' == data_set_meta_infos[0].identifier
+
+@pytest.mark.skip(reason='This test is expensive. Execute to test access to elevation data')
+def test_query_wrapped_meta_info_provider_eles():
+    parameters = {'path_to_json_file': PATH_TO_JSON_FILE, 'url': ELES_TEST_URL,
+                  'data_types': '{}, TYPE_X'.format(DataTypeConstants.ASTER)}
+    provider = HttpMetaInfoProviderAccessor.create_from_parameters(parameters)
+
+    query_string = 'POLYGON((-6.5 42.7, -6.7 42.6, -6.7 42.1, -6.5 42.1, -6.5 42.7));2017-09-04;2017-09-04;ASTER'
+    data_set_meta_infos = provider._query_wrapped_meta_info_provider(query_string)
+
+    assert 1 == len(data_set_meta_infos)
+    expected_aster_coverage = loads('POLYGON((-7. 42., -7. 43., -6. 43., -6. 42., -7. 42.))')
+    aster_coverage = loads(data_set_meta_infos[0].coverage)
+    assert expected_aster_coverage.almost_equals(aster_coverage)
+    assert '' == data_set_meta_infos[0].start_time
+    assert '' == data_set_meta_infos[0].end_time
+    assert 'ASTER' == data_set_meta_infos[0].data_type
+    assert 'ASTGTM2_N42W007_dem.tif' == data_set_meta_infos[0].identifier
 
 
+@pytest.mark.skip(reason='Test will not work when server is down')
 def test_query_wrapped_meta_info_provider_emus():
     parameters = {'path_to_json_file': PATH_TO_EMUS_STORE, 'url': EMUS_TEST_URL,
                   'supported_data_types': '{}, {}'.format(DataTypeConstants.S2A_EMULATOR, DataTypeConstants.S2B_EMULATOR)}
@@ -75,7 +77,7 @@ def test_query_wrapped_meta_info_provider_emus():
 
     query_string = 'POLYGON((-6. 42.7, -6.7 42.6, -6.7 42.1, -6. 42.1, -6. 42.7));2017-09-04;2017-09-04;' \
                    'ISO_MSI_A_EMU, ISO_MSI_B_EMU'
-    data_set_meta_infos = provider._query_wrapped_meta_info_provider(query_string)
+    data_set_meta_infos = provider._query_wrapped_meta_info_provider(query_string, [])
 
     assert 12 == len(data_set_meta_infos)
     for i, data_set_meta_info in enumerate(data_set_meta_infos):
@@ -101,13 +103,14 @@ def test_query_wrapped_meta_info_provider_emus():
     assert 'isotropic_MSI_emulators_optimization_xcp_S2B.pkl' == data_set_meta_infos[11].identifier
 
 
+@pytest.mark.skip(reason='Test will not work when server is down')
 def test_query_wrapped_meta_info_provider_wv_emu():
     parameters = {'path_to_json_file': PATH_TO_EMUS_STORE, 'url': WV_EMU_TEST_URL,
                   'supported_data_types': '{}'.format(DataTypeConstants.WV_EMULATOR)}
     provider = HttpMetaInfoProviderAccessor.create_from_parameters(parameters)
 
     query_string = 'POLYGON((-6. 42.7, -6.7 42.6, -6.7 42.1, -6. 42.1, -6. 42.7));2017-09-04;2017-09-04;WV_EMU'
-    data_set_meta_infos = provider._query_wrapped_meta_info_provider(query_string)
+    data_set_meta_infos = provider._query_wrapped_meta_info_provider(query_string, [])
 
     assert 1 == len(data_set_meta_infos)
     assert 'POLYGON((-180.0 90.0, 180.0 90.0, 180.0 -90.0, -180.0 -90.0, -180.0 90.0))' == \

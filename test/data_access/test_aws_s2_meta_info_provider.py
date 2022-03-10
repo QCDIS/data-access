@@ -150,3 +150,37 @@ def test_query():
     data_set_coverage_1 = loads(data_set_meta_infos[1].coverage)
     stg_30_polygon = loads(STG_30_COVERAGE)
     assert data_set_coverage_1.almost_equals(stg_30_polygon)
+
+
+def test_query_local():
+    parameters = {'path_to_json_file': path_to_json_file}
+    aws_s2_meta_info_provider = AwsS2MetaInfoProviderAccessor.create_from_parameters(parameters)
+    query_string = "POLYGON((-6.5 37.7, -5.7 37.6, -5.7 37.1, -6.5 37.1, -6.5 37.7));2017-09-04;2017-09-04;AWS_S2_L1C"
+
+    data_set_meta_infos = aws_s2_meta_info_provider.query_local(query_string)
+
+    assert 1 == len(data_set_meta_infos)
+    assert './test/test_data/aws_s2_data/29/S/QB/2017/9/4/0/' == data_set_meta_infos[0].identifier
+    assert data_set_meta_infos[0].start_time == '2017-09-04T11:18:25'
+    assert data_set_meta_infos[0].end_time == '2017-09-04T11:18:25'
+    assert data_set_meta_infos[0].data_type == 'AWS_S2_L1C'
+    data_set_coverage_0 = loads(data_set_meta_infos[0].coverage)
+    sqb_29_polygon = loads(SQB_29_COVERAGE)
+    assert data_set_coverage_0.almost_equals(sqb_29_polygon)
+
+
+def test_query_non_local():
+    parameters = {'path_to_json_file': path_to_json_file}
+    aws_s2_meta_info_provider = AwsS2MetaInfoProviderAccessor.create_from_parameters(parameters)
+    query_string = "POLYGON((-6.5 37.7, -5.7 37.6, -5.7 37.1, -6.5 37.1, -6.5 37.7));2017-09-04;2017-09-04;AWS_S2_L1C"
+
+    data_set_meta_infos = aws_s2_meta_info_provider.query_non_local(query_string)
+
+    assert 1 == len(data_set_meta_infos)
+    assert '30/S/TG/2017/9/4/0' == data_set_meta_infos[0].identifier
+    assert data_set_meta_infos[0].start_time == '2017-09-04T11:18:25'
+    assert data_set_meta_infos[0].end_time == '2017-09-04T11:18:25'
+    assert data_set_meta_infos[0].data_type == 'AWS_S2_L1C'
+    data_set_coverage_0 = loads(data_set_meta_infos[0].coverage)
+    stg_30_polygon = loads(STG_30_COVERAGE)
+    assert data_set_coverage_0.almost_equals(stg_30_polygon)

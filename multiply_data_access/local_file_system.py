@@ -211,6 +211,9 @@ class LocalFileSystem(FileSystem):
         return {'path': self.path,
                 'pattern': self.pattern}
 
+    def clear_cache(self):
+        pass
+
 
 class TimeStep(Enum):
     DAILY = 0

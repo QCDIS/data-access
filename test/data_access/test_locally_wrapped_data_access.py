@@ -27,7 +27,8 @@ class TestWrappedMetaInfoProvider(LocallyWrappedMetaInfoProvider):
             raise ValueError('I required some parameter')
         self._some_parameter = parameters['some_parameter']
 
-    def _query_wrapped_meta_info_provider(self, query_string: str) -> List[DataSetMetaInfo]:
+    def _query_wrapped_meta_info_provider(self, query_string: str, local_data_set_meta_infos: List[DataSetMetaInfo]) \
+            -> List[DataSetMetaInfo]:
         only_dataset = DataSetMetaInfo(coverage="POLYGON((15 15, 25 15, 25 25, 15 25, 15 15))",
                                        start_time="2017-03-11 14:33:00",
                                        end_time="2017-03-11 14:45:00",
@@ -48,6 +49,9 @@ class TestWrappedMetaInfoProvider(LocallyWrappedMetaInfoProvider):
 
     def get_provided_data_types(self):
         return ['TYPE_C']
+
+    def encapsulates_data_type(self, data_type: str) -> bool:
+        return False
 
     def _get_wrapped_parameters_as_dict(self) -> dict:
         wrapped_parameters_as_dict = {'some_parameter': self._some_parameter}
@@ -115,9 +119,7 @@ def test_query():
         wrapped_meta_info_provider = TestWrappedMetaInfoProvider(parameters)
 
         query_string = "POLYGON((5 5, 35 5, 35 35, 5 35, 5 5));2017-03-10;2017-03-10;TYPE_C"
-
         data_set_meta_infos = wrapped_meta_info_provider.query(query_string)
-
         assert len(data_set_meta_infos) == 1
         assert data_set_meta_infos[0].coverage == 'POLYGON((0 35, 10 35, 10 35, 0 45, 0 35))'
         assert data_set_meta_infos[0].start_time == '2017-03'
@@ -138,6 +140,59 @@ def test_query():
         assert other_data_set_meta_infos[1].end_time == '2017-03-11 14:45:00'
         assert other_data_set_meta_infos[1].data_type == 'TYPE_C'
         assert other_data_set_meta_infos[1].identifier == 'dterftge'
+    finally:
+        os.remove(path_to_json_file_2)
+
+
+def test_query_local():
+    # copy this so we don't mess up the original file
+    path_to_json_file_2 = path_to_json_file + '_2'
+    shutil.copyfile(path_to_json_file, path_to_json_file_2)
+    try:
+        parameters = {'some_parameter': 'something', 'path_to_json_file': path_to_json_file_2}
+        wrapped_meta_info_provider = TestWrappedMetaInfoProvider(parameters)
+
+        query_string = "POLYGON((5 5, 35 5, 35 35, 5 35, 5 5));2017-03-10;2017-03-10;TYPE_C"
+        data_set_meta_infos = wrapped_meta_info_provider.query_local(query_string)
+        assert len(data_set_meta_infos) == 1
+        assert data_set_meta_infos[0].coverage == 'POLYGON((0 35, 10 35, 10 35, 0 45, 0 35))'
+        assert data_set_meta_infos[0].start_time == '2017-03'
+        assert data_set_meta_infos[0].end_time == '2017-03'
+        assert data_set_meta_infos[0].data_type == 'TYPE_C'
+        assert data_set_meta_infos[0].identifier == 'vgfbhngf'
+
+        other_query_string = "POLYGON((5 5, 35 5, 35 35, 5 35, 5 5));2017-03-10;2017-03-11;TYPE_C"
+        other_data_set_meta_infos = wrapped_meta_info_provider.query_local(other_query_string)
+        assert len(other_data_set_meta_infos) == 1
+        assert other_data_set_meta_infos[0].coverage == 'POLYGON((0 35, 10 35, 10 35, 0 45, 0 35))'
+        assert other_data_set_meta_infos[0].start_time == '2017-03'
+        assert other_data_set_meta_infos[0].end_time == '2017-03'
+        assert other_data_set_meta_infos[0].data_type == 'TYPE_C'
+        assert other_data_set_meta_infos[0].identifier == 'vgfbhngf'
+    finally:
+        os.remove(path_to_json_file_2)
+
+
+def test_query_non_local():
+    # copy this so we don't mess up the original file
+    path_to_json_file_2 = path_to_json_file + '_2'
+    shutil.copyfile(path_to_json_file, path_to_json_file_2)
+    try:
+        parameters = {'some_parameter': 'something', 'path_to_json_file': path_to_json_file_2}
+        wrapped_meta_info_provider = TestWrappedMetaInfoProvider(parameters)
+
+        query_string = "POLYGON((5 5, 35 5, 35 35, 5 35, 5 5));2017-03-10;2017-03-10;TYPE_C"
+        data_set_meta_infos = wrapped_meta_info_provider.query_non_local(query_string)
+        assert len(data_set_meta_infos) == 0
+
+        other_query_string = "POLYGON((5 5, 35 5, 35 35, 5 35, 5 5));2017-03-10;2017-03-11;TYPE_C"
+        other_data_set_meta_infos = wrapped_meta_info_provider.query_non_local(other_query_string)
+        assert len(other_data_set_meta_infos) == 1
+        assert other_data_set_meta_infos[0].coverage == "POLYGON((15 15, 25 15, 25 25, 15 25, 15 15))"
+        assert other_data_set_meta_infos[0].start_time == '2017-03-11 14:33:00'
+        assert other_data_set_meta_infos[0].end_time == '2017-03-11 14:45:00'
+        assert other_data_set_meta_infos[0].data_type == 'TYPE_C'
+        assert other_data_set_meta_infos[0].identifier == 'dterftge'
     finally:
         os.remove(path_to_json_file_2)
 
@@ -168,6 +223,9 @@ class TestWrappedFileSystem(LocallyWrappedFileSystem):
     def _get_wrapped_parameters_as_dict(self) -> dict:
         wrapped_parameters_as_dict = {'some_parameter': self._some_parameter}
         return wrapped_parameters_as_dict
+
+    def clear_cache(self):
+        pass
 
 
 def test_locally_wrappd_file_system_create():
@@ -221,6 +279,10 @@ class TypeXValidator(DataValidator):
 
     def is_valid_for(self, path: str, roi: Polygon, start_time: datetime, end_time: datetime) -> bool:
         return self.is_valid(path)
+
+    @staticmethod
+    def differs_by_name(cls):
+        return False
 
 
 def test_wrapped_file_system_get():

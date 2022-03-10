@@ -93,6 +93,20 @@
         path_to_json_file: user_dir/modis_mcd43a1_store.json
 - DataStore:
     FileSystem:
+      type: MundiFileSystem
+      parameters:
+        temp_dir: user_dir/temp/mundi/
+        access_key_id:
+        secret_access_key:
+        path: user_dir/data/
+        pattern: /dt/yy/mm/dd/
+    Id: Mundi
+    MetaInfoProvider:
+      type: MundiMetaInfoProvider
+      parameters:
+        path_to_json_file: user_dir/mundi_local_store.json
+- DataStore:
+    FileSystem:
       type: LocalFileSystem
       parameters:
         path: user_dir/data/
@@ -103,3 +117,31 @@
       parameters:
         path_to_json_file: user_dir/s2_l2_store.json
         supported_data_types: AWS_S2_L2
+- DataStore:
+    FileSystem:
+      type: SciHubFileSystem
+      parameters:
+        temp_dir: user_dir/temp/scihub/
+        path: user_dir/data/
+        pattern: /dt/yy/mm/dd/
+        username:
+        password:
+    Id: SciHub
+    MetaInfoProvider:
+      type: SciHubMetaInfoProvider
+      parameters:
+        path_to_json_file: user_dir/scihub_store.json
+        username:
+        password:
+- DataStore:
+    FileSystem:
+      parameters:
+        path: /data/archive/
+        pattern: /dt/yy/mm/dd/
+        temp_dir: /data/temp/creodias/
+      type: CreoDiasFileSystem
+    Id: CreoDias
+    MetaInfoProvider:
+      parameters:
+        path_to_json_file: /home/ubuntu/.multiply/creodias_store.json
+      type: CreoDiasMetaInfoProvider

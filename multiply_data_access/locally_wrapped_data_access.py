@@ -97,7 +97,7 @@ class LocallyWrappedMetaInfoProvider(MetaInfoProvider):
 
     def query(self, query_string: str) -> List[DataSetMetaInfo]:
         local_data_meta_set_infos = self._json_meta_info_provider.query(query_string)
-        wrapped_data_set_meta_infos = self._query_wrapped_meta_info_provider(query_string)
+        wrapped_data_set_meta_infos = self._query_wrapped_meta_info_provider(query_string, local_data_meta_set_infos)
         to_be_appended = []
         for wrapped_data_set_meta_info in wrapped_data_set_meta_infos:
             already_contained = False
@@ -111,9 +111,24 @@ class LocallyWrappedMetaInfoProvider(MetaInfoProvider):
             local_data_meta_set_infos.append(data_set_meta_info)
         return local_data_meta_set_infos
 
+    def query_local(self, query_string: str) -> List[DataSetMetaInfo]:
+        return self._json_meta_info_provider.query(query_string)
+
+    def query_non_local(self, query_string: str) -> List[DataSetMetaInfo]:
+        local_data_meta_set_infos = self._json_meta_info_provider.query(query_string)
+        return self._query_wrapped_meta_info_provider(query_string, local_data_meta_set_infos)
+
+    @staticmethod
+    def _is_provided_locally(data_set_meta_info: DataSetMetaInfo,
+                                 local_data_set_meta_infos: List[DataSetMetaInfo]) -> bool:
+        for local_data_set_meta_info in local_data_set_meta_infos:
+            if local_data_set_meta_info.equals(data_set_meta_info):
+                return True
+        return False
 
     @abstractmethod
-    def _query_wrapped_meta_info_provider(self, query_string: str) -> List[DataSetMetaInfo]:
+    def _query_wrapped_meta_info_provider(self, query_string: str, local_data_set_meta_infos: List[DataSetMetaInfo]) \
+            -> List[DataSetMetaInfo]:
         """Queries a wrapped file system."""
 
     def _get_parameters_as_dict(self) -> dict:

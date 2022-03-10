@@ -86,6 +86,23 @@ def test_json_meta_info_provider_query_for_data_type():
     assert len(meta_data_infos) == 0
 
 
+def test_json_meta_info_provider_query_local():
+    provider = JsonMetaInfoProvider(path_to_json_file, None)
+    query_string = "POLYGON((5 5, 35 5, 35 35, 5 35, 5 5));2017-03;2017-03;TYPE_A, TYPE_C"
+    meta_data_infos = provider.query_local(query_string)
+    assert len(meta_data_infos) == 3
+    ensure_first_data_set(meta_data_infos[0])
+    ensure_second_data_set(meta_data_infos[1])
+    ensure_fourth_data_set(meta_data_infos[2])
+
+
+def test_json_meta_info_provider_query_non_local():
+    provider = JsonMetaInfoProvider(path_to_json_file, None)
+    query_string = "POLYGON((0 0, 90 0, 90 90, 0 90, 0 0));2017-01;2019-01;TYPE_A, TYPE_B, TYPE_C"
+    meta_data_infos = provider.query_non_local(query_string)
+    assert len(meta_data_infos) == 0
+
+
 def test_get_parameters_as_dict():
     provider = JsonMetaInfoProvider(path_to_json_file, None)
 

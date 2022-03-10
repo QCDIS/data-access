@@ -8,6 +8,7 @@ format that is globally an.
 
 import gdal
 import os
+import shutil
 import xml.etree.ElementTree as ET
 
 from shapely.geometry import Polygon
@@ -50,24 +51,48 @@ class VrtMetaInfoProvider(MetaInfoProvider):
         if self._provided_data_type not in self.get_data_types_from_query_string(query_string):
             return []
         roi = self.get_roi_from_query_string(query_string)
-        if not os.path.exists(self._path_to_vrt_file):
-            coverages, referenced_data = self._get_coverages_from_wrapped_meta_info_provider(query_string)
+        coverages, referenced_data = self._get_coverages_from_local_meta_info_provider()
+        coverage = cascaded_union(coverages)
+        if not roi.within(coverage):
+            additional_coverages, additional_files = self._get_coverages_from_wrapped_meta_info_provider(query_string)
+            for i in range(len(additional_files)):
+                if additional_files[i] not in referenced_data:
+                    referenced_data.append(additional_files[i])
+                    coverages.append(additional_coverages[i])
             coverage = cascaded_union(coverages)
-        else:
-            vrt_data_set = gdal.Open(self._path_to_vrt_file)
-            vrt_coverage = loads(vrt_data_set.GetMetadataItem('COVERAGE'))
-            referenced_data = self._get_referenced_data_sets_from_vrt()
-            if roi.within(vrt_coverage):
-                coverage = vrt_coverage
-            else:
-                coverages, additional_files = self._get_coverages_from_wrapped_meta_info_provider(query_string)
-                for additional_file in additional_files:
-                    if additional_file not in referenced_data:
-                        referenced_data.append(additional_file)
-                coverages.append(vrt_coverage)
-                coverage = cascaded_union(coverages)
-        if referenced_data is not None:
-            referenced_data = ';'.join(referenced_data)
+        referenced_data = ';'.join(referenced_data)
+        data_set_meta_info = DataSetMetaInfo(coverage.wkt, None, None, self._provided_data_type,
+                                             self._path_to_vrt_file, referenced_data)
+        return [data_set_meta_info]
+
+    def query_local(self, query_string: str) -> List[DataSetMetaInfo]:
+        if self._provided_data_type not in self.get_data_types_from_query_string(query_string):
+            return []
+        roi = self.get_roi_from_query_string(query_string)
+        coverages, referenced_data = self._get_coverages_from_local_meta_info_provider()
+        coverage = cascaded_union(coverages)
+        if not roi.within(coverage):
+            return []
+        referenced_data = ';'.join(referenced_data)
+        data_set_meta_info = DataSetMetaInfo(coverage.wkt, None, None, self._provided_data_type,
+                                             self._path_to_vrt_file, referenced_data)
+        return [data_set_meta_info]
+
+    def query_non_local(self, query_string: str) -> List[DataSetMetaInfo]:
+        if self._provided_data_type not in self.get_data_types_from_query_string(query_string):
+            return []
+        roi = self.get_roi_from_query_string(query_string)
+        coverages, referenced_data = self._get_coverages_from_local_meta_info_provider()
+        coverage = cascaded_union(coverages)
+        if roi.within(coverage):
+            return []
+        additional_coverages, additional_files = self._get_coverages_from_wrapped_meta_info_provider(query_string)
+        for i in range(len(additional_files)):
+            if additional_files[i] not in referenced_data:
+                referenced_data.append(additional_files[i])
+                coverages.append(additional_coverages[i])
+        coverage = cascaded_union(coverages)
+        referenced_data = ';'.join(referenced_data)
         data_set_meta_info = DataSetMetaInfo(coverage.wkt, None, None, self._provided_data_type,
                                              self._path_to_vrt_file, referenced_data)
         return [data_set_meta_info]
@@ -84,9 +109,18 @@ class VrtMetaInfoProvider(MetaInfoProvider):
             referenced_data_sets.append(referenced_data_set.split('/')[-1])
         return referenced_data_sets
 
+    def _get_coverages_from_local_meta_info_provider(self) -> (List[Polygon], List[str]):
+        local_data_meta_set_infos = self._wrapped_meta_info_provider.get_all_data()
+        coverages = []
+        names = []
+        for data_set_meta_info in local_data_meta_set_infos:
+            coverages.append(loads(data_set_meta_info.coverage))
+            names.append(data_set_meta_info.identifier)
+        return coverages, names
+
     def _get_coverages_from_wrapped_meta_info_provider(self, query_string: str) -> (List[Polygon], List[str]):
         split_string = query_string.split(';')
-        split_string[-1] = self._encapsulated_data_type
+        split_string[3] = self._encapsulated_data_type
         new_query_string = ';'.join(split_string)
         encapsulated_data_meta_set_infos = self._wrapped_meta_info_provider.query(new_query_string)
         coverages = []
@@ -101,6 +135,9 @@ class VrtMetaInfoProvider(MetaInfoProvider):
 
     def get_provided_data_types(self) -> List[str]:
         return [self._provided_data_type]
+
+    def encapsulates_data_type(self, data_type: str) -> bool:
+        return data_type == self._encapsulated_data_type
 
     def _get_parameters_as_dict(self) -> dict:
         parameters = {'path_to_vrt_file': self._path_to_vrt_file,
@@ -163,7 +200,7 @@ class VrtFileSystem(FileSystem):
                                                               self._encapsulated_data_type, data_set))
             for file_ref in file_refs:
                 if file_ref.url not in required_datasets:
-                    required_datasets.append(file_ref.url)
+                    required_datasets.append(file_ref.url.replace('//', '/'))
         vrt_dataset = gdal.BuildVRT(self._path_to_vrt_file, required_datasets)
         vrt_dataset.SetMetadataItem('COVERAGE', data_set_meta_info.coverage)
         vrt_dataset.FlushCache()
@@ -205,6 +242,9 @@ class VrtFileSystem(FileSystem):
 
     def scan(self) -> Sequence[DataSetMetaInfo]:
         return self._file_system.scan()
+
+    def clear_cache(self):
+        self._file_system.clear_cache()
 
 
 class VrtFileSystemAccessor(FileSystemAccessor):

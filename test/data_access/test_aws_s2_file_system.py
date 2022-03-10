@@ -8,8 +8,6 @@ from multiply_data_access.aws_s2_file_system import AwsS2FileSystem, AwsS2FileSy
 from multiply_data_access.data_access import DataSetMetaInfo
 
 OUTPUT_DIR = './test/test_data/aws_s2_download_dir/'
-if not os.path.exists(OUTPUT_DIR):
-    os.mkdir(OUTPUT_DIR)
 
 
 def test_aws_s2_file_system_accessor_get_name():

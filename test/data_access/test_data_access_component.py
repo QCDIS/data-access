@@ -1,4 +1,4 @@
-from multiply_data_access.data_access_component import DataAccessComponent
+from multiply_data_access.data_access_component import DataAccessComponent, _build_query_string
 from multiply_data_access.json_meta_info_provider import JsonMetaInfoProvider
 from multiply_data_access.local_file_system import LocalFileSystem
 from multiply_data_access.data_store import DataStore
@@ -91,3 +91,58 @@ def test_create_local_data_store():
                                                   meta_info_file='./test/test_data/meta_store.json',
                                                   base_pattern='mm/dt/', id='cgfsvt',
                                                   supported_data_types='TYPE_A,TYPE_B')
+
+
+def test_build_query_string():
+    query_string = _build_query_string(roi="POLYGON((15 15, 25 15, 25 25, 15 25, 15 15))",
+                                       start_time="2017-03-21 14:33:00", end_time="2017-03-21 14:45:00",
+                                       data_types="TYPE_A,TYPE_B", roi_grid="EPSG:3301")
+    expected = "POLYGON((15 15, 25 15, 25 25, 15 25, 15 15));2017-03-21 14:33:00;2017-03-21 14:45:00;" \
+               "TYPE_A,TYPE_B;EPSG:3301"
+
+    assert expected == query_string
+
+
+def test_get_query_strings_regular():
+    data_access_component = DataAccessComponent()
+    query_strings = data_access_component._get_query_strings(roi="POLYGON((15 15, 25 15, 25 25, 15 25, 15 15))",
+                                                             start_time="2017-03-21 14:33:00",
+                                                             end_time="2017-03-21 14:45:00",
+                                                             data_types="TYPE_A",
+                                                             roi_grid="EPSG:3301")
+    assert 1 == len(query_strings)
+    expected = "POLYGON((15 15, 25 15, 25 25, 15 25, 15 15));2017-03-21 14:33:00;2017-03-21 14:45:00;" \
+               "TYPE_A;EPSG:3301"
+    assert expected == query_strings[0]
+
+
+def test_get_query_strings_sentinel_1_and_emtpy():
+    data_access_component = DataAccessComponent()
+    query_strings = data_access_component._get_query_strings(roi="POLYGON((15 15, 25 15, 25 25, 15 25, 15 15))",
+                                                             start_time="2017-03-21 14:33:00",
+                                                             end_time="2017-03-21 14:45:00",
+                                                             data_types="Sentinel-1",
+                                                             roi_grid="EPSG:3301")
+    assert 2 == len(query_strings)
+    expected_1 = "POLYGON((15 15, 25 15, 25 25, 15 25, 15 15));2017-03-21 14:33:00;2017-03-21 14:45:00;" \
+                 "S1_SLC;EPSG:3301"
+    expected_2 = "POLYGON((15 15, 25 15, 25 25, 15 25, 15 15));2017-03-21 14:33:00;2017-03-21 14:45:00;" \
+                 "S1_Speckled;EPSG:3301"
+    assert expected_1 == query_strings[0]
+    assert expected_2 == query_strings[1]
+
+
+def test_get_query_strings_sentinel_2_and_other_types():
+    data_access_component = DataAccessComponent()
+    query_strings = data_access_component._get_query_strings(roi="POLYGON((15 15, 25 15, 25 25, 15 25, 15 15))",
+                                                             start_time="2017-03-21 14:33:00",
+                                                             end_time="2017-03-21 14:45:00",
+                                                             data_types="TYPE_A,Sentinel-2,TYPE_B",
+                                                             roi_grid="EPSG:3301")
+    assert 3 == len(query_strings)
+    assert "POLYGON((15 15, 25 15, 25 25, 15 25, 15 15));2017-03-21 14:33:00;2017-03-21 14:45:00;" \
+           "S2_L1C,AWS_S2_L1C;EPSG:3301" == query_strings[0]
+    assert "POLYGON((15 15, 25 15, 25 25, 15 25, 15 15));2017-03-21 14:33:00;2017-03-21 14:45:00;" \
+           "S2_L2,AWS_S2_L2;EPSG:3301" == query_strings[1]
+    assert "POLYGON((15 15, 25 15, 25 25, 15 25, 15 15));2017-03-21 14:33:00;2017-03-21 14:45:00;" \
+           "TYPE_A,TYPE_B;EPSG:3301" == query_strings[2]

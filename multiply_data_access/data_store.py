@@ -42,6 +42,20 @@ class DataStore(object):
         """
         return self._meta_info_provider.query(query_string)
 
+    def query_local(self, query_string: str) -> List[DataSetMetaInfo]:
+        """
+        Evaluates a query and retrieves a result set for it from data that is locally available.
+        :return:
+        """
+        return self._meta_info_provider.query_local(query_string)
+
+    def query_non_local(self, query_string: str) -> List[DataSetMetaInfo]:
+        """
+        Evaluates a query and retrieves a result set for it from data that is not locally available.
+        :return:
+        """
+        return self._meta_info_provider.query_non_local(query_string)
+
     def provides_data_type(self, data_type: str) -> bool:
         """
         Whether the data store provides access to data of the queried type
@@ -94,7 +108,8 @@ class DataStore(object):
         found_data_set_meta_infos = self._file_system.scan()
         registered_data_set_meta_infos = self._meta_info_provider.get_all_data()
         for found_data_set_meta_info in found_data_set_meta_infos:
-            if not self._meta_info_provider.provides_data_type(found_data_set_meta_info.data_type):
+            if not self._meta_info_provider.provides_data_type(found_data_set_meta_info.data_type) and \
+                    not self._meta_info_provider.encapsulates_data_type(found_data_set_meta_info.data_type):
                 continue
             already_registered = False
             for registered_data_set_meta_info in registered_data_set_meta_infos:
@@ -111,3 +126,7 @@ class DataStore(object):
                     break
             if not found:
                 self._meta_info_provider.remove(registered_data_set_meta_info)
+
+    def clear_cache(self):
+        self._file_system.clear_cache()
+        self.update()

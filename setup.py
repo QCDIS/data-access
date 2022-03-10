@@ -9,14 +9,17 @@ if on_rtd:
     requirements = ['mock']
 else:
     requirements = [
-    'beautifulsoup4',
-    'html5lib',
-    'multiply_core',
-    'nose',
-    'shapely',
-    'pytest',
-    'pyyaml',
-    'requests']
+        'beautifulsoup4',
+        'html5lib',
+        'lxml',
+        'multiply_core',
+        'shapely',
+        'pytest',
+        'pyyaml',
+        'requests',
+        'xarray'
+    ]
+requirements = []
 
 __version__ = None
 with open('multiply_data_access/version.py') as f:
@@ -36,7 +39,10 @@ setup(name='multiply-data-access',
               'aws_s2_file_system = multiply_data_access:aws_s2_file_system.AwsS2FileSystemAccessor',
               'lpdaac_file_system = multiply_data_access:lpdaac_data_access.LpDaacFileSystemAccessor',
               'http_file_system = multiply_data_access:general_remote_access.HttpFileSystemAccessor',
-              'vrt_file_system = multiply_data_access:vrt_data_access.VrtFileSystemAccessor'
+              'vrt_file_system = multiply_data_access:vrt_data_access.VrtFileSystemAccessor',
+              'mundi_file_system = multiply_data_access:mundi_data_access.MundiObsFileSystemAccessor',
+              'mundi_rest_file_system = multiply_data_access:mundi_data_access.MundiRestFileSystemAccessor',
+              'scihub_file_system = multiply_data_access:scihub_data_access.SciHubFileSystemAccessor'
           ],
           'meta_info_provider_plugins': [
               'json_meta_info_provider = multiply_data_access:json_meta_info_provider.JsonMetaInfoProviderAccessor',
@@ -45,12 +51,12 @@ setup(name='multiply-data-access',
               'lpdaac_meta_info_provider = '
               'multiply_data_access:lpdaac_data_access.LpDaacMetaInfoProviderAccessor',
               'http_meta_info_provider = multiply_data_access:general_remote_access.HttpMetaInfoProviderAccessor',
-              'vrt_meta_info_provider = multiply_data_access:vrt_data_access.VrtMetaInfoProviderAccessor'
+              'vrt_meta_info_provider = multiply_data_access:vrt_data_access.VrtMetaInfoProviderAccessor',
+              'locally_wrapped_mundi_meta_info_provider = '
+              'multiply_data_access:mundi_data_access.LocallyWrappedMundiMetaInfoProviderAccessor',
+              'mundi_meta_info_provider = multiply_data_access:mundi_data_access.MundiMetaInfoProviderAccessor',
+              'scihub_meta_info_provider = multiply_data_access:scihub_data_access.SciHubMetaInfoProviderAccessor'
           ],
       },
-      install_requires=requirements,
-      # dependency_links=[
-        # 'https://github.com/multiply-org/multiply-core.git#egg=multiply-core'
-        # 'https://github.com/multiply-org/multiply-core/tarball/master/#egg=multiply-core-0.4.1.dev1'
-      # ]
-)
+      install_requires=requirements
+      )
