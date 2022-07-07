@@ -16,10 +16,9 @@ from multiply_data_access.modis_tile_coverage_provider import get_tile_coverage
 from datetime import timedelta
 from shapely.geometry import Polygon
 from typing import Optional
-import gdal
+from osgeo import gdal, osr
 import xarray
 import os
-import osr
 import zipfile
 from xml.etree import ElementTree
 from lxml.etree import XML
