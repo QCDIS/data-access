@@ -2,7 +2,7 @@ import base64
 import datetime
 import logging
 import os
-import osr
+from osgeo import osr
 import re
 import shutil
 from sys import stdout
