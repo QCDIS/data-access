@@ -6,7 +6,7 @@ This module contains the functionality to access data that is encapsulated in th
 format that is globally an.
 """
 
-import gdal
+from osgeo import gdal
 import os
 import shutil
 import xml.etree.ElementTree as ET
