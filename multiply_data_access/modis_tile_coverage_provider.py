@@ -41,7 +41,7 @@ def get_tile_coverage(h: int, v: int) -> Optional[Polygon]:
     sinu_min_lon = v * _X_STEP + _M_X0
     sinu_max_lon = (v + 1) * _X_STEP + _M_X0
     points = []
-    if int(gdalversion) >= 3:
+    if int(gdalversion[0]) >= 3:
         lon0, lat0, z0 = _modis_to_wgs84.TransformPoint(sinu_min_lat, sinu_min_lon)
         lon2, lat2, z2 = _modis_to_wgs84.TransformPoint(sinu_max_lat, sinu_min_lon)
         lon3, lat3, z3 = _modis_to_wgs84.TransformPoint(sinu_max_lat, sinu_max_lon)
