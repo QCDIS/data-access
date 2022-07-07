@@ -1,4 +1,4 @@
-import osr
+from osgeo import osr, __version__ as gdalversion
 from shapely.geometry import LineString, Point, Polygon
 from typing import Optional
 
@@ -41,15 +41,22 @@ def get_tile_coverage(h: int, v: int) -> Optional[Polygon]:
     sinu_min_lon = v * _X_STEP + _M_X0
     sinu_max_lon = (v + 1) * _X_STEP + _M_X0
     points = []
-    lat0, lon0, z0 = _modis_to_wgs84.TransformPoint(sinu_min_lat, sinu_min_lon)
+    if int(gdalversion) >= 3:
+        lon0, lat0, z0 = _modis_to_wgs84.TransformPoint(sinu_min_lat, sinu_min_lon)
+        lon2, lat2, z2 = _modis_to_wgs84.TransformPoint(sinu_max_lat, sinu_min_lon)
+        lon3, lat3, z3 = _modis_to_wgs84.TransformPoint(sinu_max_lat, sinu_max_lon)
+        lon1, lat1, z1 = _modis_to_wgs84.TransformPoint(sinu_min_lat, sinu_max_lon)
+    else:
+        lat0, lon0, z0 = _modis_to_wgs84.TransformPoint(sinu_min_lat, sinu_min_lon)
+        lat2, lon2, z2 = _modis_to_wgs84.TransformPoint(sinu_max_lat, sinu_min_lon)
+        lat3, lon3, z3 = _modis_to_wgs84.TransformPoint(sinu_max_lat, sinu_max_lon)
+        lat1, lon1, z1 = _modis_to_wgs84.TransformPoint(sinu_min_lat, sinu_max_lon)
     points.append(Point(lat0, lon0))
-    lat2, lon2, z2 = _modis_to_wgs84.TransformPoint(sinu_max_lat, sinu_min_lon)
     points.append(Point(lat2, lon2))
-    lat3, lon3, z3 = _modis_to_wgs84.TransformPoint(sinu_max_lat, sinu_max_lon)
     points.append(Point(lat3, lon3))
-    lat1, lon1, z1 = _modis_to_wgs84.TransformPoint(sinu_min_lat, sinu_max_lon)
     points.append(Point(lat1, lon1))
     points.append(Point(lat0, lon0))
+    
     polygon = Polygon([[p.x, p.y] for p in points])
     polygon = _validate_polygon(polygon)
     if h < 17:
@@ -57,7 +64,6 @@ def get_tile_coverage(h: int, v: int) -> Optional[Polygon]:
     elif h > 18:
         polygon = _cut_eastern(polygon)
     return polygon
-
 
 def _validate_polygon(polygon: Polygon()):
     coords = polygon.exterior.coords
