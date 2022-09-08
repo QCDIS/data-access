@@ -1,20 +1,19 @@
 on: [push]
 
 jobs:
-  build-wheel:
-    runs-on: ubuntu-latest
-
+  example-3:
+    name: Ex3 Linux
+    runs-on: "ubuntu-latest"
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: bdist_wheel
-      run: |
-        python setup.py bdist_wheel
-    - name: 'Upload wheel artifact'
-      uses: actions/upload-artifact@v3
-      with:
-        name: jupyterlab_vre
-        path: dist/multiply_data_access-0.5.2-py2.py3-none-any.whl
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: multiply-da-dev
+          environment-file: environment.yml
+          python-version: 3.9
+      - run: |
+          conda info
+          conda list
