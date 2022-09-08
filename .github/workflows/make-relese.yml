@@ -1,7 +1,7 @@
 on: [push]
 
 jobs:
-  build-linux:
+  build-wheel:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,3 +14,11 @@ jobs:
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         $CONDA/bin/conda env update --file environment.yml --name base
+    - name: bdist_wheel
+      run: |
+        python setup.py bdist_wheel --universal
+    - name: 'Upload wheel artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: jupyterlab_vre
+        path: dist/multiply_data_access-0.5.2-py2.py3-none-any.whl
