@@ -1,14 +1,16 @@
-name: make release
-on:
-  push:
-    tags:
-      - '*'
+on: [push]
 
 jobs:
-  build_sdist:
-    name: Build source distribution
+  build-linux:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - id: build
-        uses: OpenAstronomy/build-python-dist@v1
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        # $CONDA is an environment variable pointing to the root of the miniconda directory
+        $CONDA/bin/conda env update --file environment.yml --name base
