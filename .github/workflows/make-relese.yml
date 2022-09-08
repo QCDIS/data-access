@@ -12,7 +12,7 @@ jobs:
         python-version: 3.9
     - name: bdist_wheel
       run: |
-        python setup.py bdist_wheel --universal
+        python setup.py bdist_wheel
     - name: 'Upload wheel artifact'
       uses: actions/upload-artifact@v3
       with:
