@@ -1,0 +1,14 @@
+name: make release
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - id: build
+        uses: OpenAstronomy/build-python-dist@v1
