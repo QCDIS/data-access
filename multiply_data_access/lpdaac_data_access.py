@@ -23,7 +23,7 @@ __author__ = 'Tonio Fincke (Brockmann Consult GmbH),' \
 _SUPPORTED_DATA_TYPES = [DataTypeConstants.MODIS_MCD_43, DataTypeConstants.MODIS_MCD_15_A2]
 _DATA_OFFSETS = {DataTypeConstants.MODIS_MCD_43: 0, DataTypeConstants.MODIS_MCD_15_A2: 1}
 _DATA_INTERVALS = {DataTypeConstants.MODIS_MCD_43: 1, DataTypeConstants.MODIS_MCD_15_A2: 8}
-_BASE_URL = 'http://e4ftl01.cr.usgs.gov/'
+_BASE_URL = 'https://e4ftl01.cr.usgs.gov/' #_BASE_URL = 'http://e4ftl01.cr.usgs.gov/'
 _PLATFORM = 'MOTA'
 _FILE_SYSTEM_NAME = 'LpDaacFileSystem'
 _META_INFO_PROVIDER_NAME = 'LpDaacMetaInfoProvider'
