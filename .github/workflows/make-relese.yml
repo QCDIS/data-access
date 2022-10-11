@@ -13,11 +13,11 @@ jobs:
     - name: Install dependencies
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
-        $CONDA/bin/conda env update --file environment.yml --name base && \
-        conda activate base
+        $CONDA/bin/conda env update --file environment.yml --name base
 
     - name: bdist_wheel
       run: |
+        $CONDA/bin/conda activate base && \
         python setup.py bdist_wheel --universal
     - name: 'Upload wheel artifact'
       uses: actions/upload-artifact@v3
