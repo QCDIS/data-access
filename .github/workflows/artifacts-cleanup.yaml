@@ -9,7 +9,6 @@ on:
       days:
         required: false
         type: string
-
 jobs:
   remove-old-artifacts:
     runs-on: ubuntu-latest
