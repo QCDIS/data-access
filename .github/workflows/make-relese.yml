@@ -20,5 +20,5 @@ jobs:
     - name: 'Upload wheel artifact'
       uses: actions/upload-artifact@v3
       with:
-        name: jupyterlab_vre
+        name: multiply_data_access
         path: dist/multiply_data_access-0.5.2-py2.py3-none-any.whl
