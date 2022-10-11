@@ -1,4 +1,4 @@
-name: multiply-da-dev
+name: multiply
 
 channels:
   - conda-forge

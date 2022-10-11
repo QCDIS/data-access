@@ -16,7 +16,6 @@ jobs:
         $CONDA/bin/conda env update --file environment.yml --name base
     - name: bdist_wheel
       run: |
-        conda activate base && \
         python setup.py bdist_wheel --universal
     - name: 'Upload wheel artifact'
       uses: actions/upload-artifact@v3
