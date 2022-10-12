@@ -14,6 +14,11 @@ jobs:
           environment-file: environment.yaml
           python-version: 3.9
       - run: |
-          conda info
-          conda list
           python setup.py bdist_wheel
+          
+
+      - name: 'Upload wheel artifact'
+        uses: actions/upload-artifact@v3
+        with:
+          name: jupyterlab_vre
+          path: dist/multiply_data_access-0.5.2-py2.py3-none-any.whl
