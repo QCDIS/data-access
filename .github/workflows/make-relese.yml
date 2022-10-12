@@ -1,8 +1,13 @@
-on: [push]
+on:
+  push:
+    tags:
+    - '*'
 
 jobs:
   conda:
     runs-on: "ubuntu-latest"
+    permissions:
+      contents: write
     defaults:
       run:
         shell: bash -l {0}
@@ -17,8 +22,6 @@ jobs:
           python setup.py bdist_wheel
           
 
-      - name: 'Upload wheel artifact'
-        uses: actions/upload-artifact@v3
+      - uses: ncipollo/release-action@v1
         with:
-          name: jupyterlab_vre
-          path: dist/multiply_data_access-0.5.2-py3-none-any.whl
+          artifacts: "dist/multiply_data_access-0.5.2-py3-none-any.whl"
