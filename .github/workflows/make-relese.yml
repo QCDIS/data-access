@@ -20,11 +20,7 @@ jobs:
           python-version: 3.9
       - run: |
           python setup.py bdist_wheel
-      - name: Get tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-      - name: Use tag
-        run: echo ${{steps.tag.outputs.tag}}
+
 
 
       - uses: ncipollo/release-action@v1
@@ -38,4 +34,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OUTPUT_FOLDER: temp_release_notes
-          USE_MILESTONE_TITLE: "true"
