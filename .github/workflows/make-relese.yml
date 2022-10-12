@@ -32,3 +32,4 @@ jobs:
         with:
           artifacts: "dist/multiply_data_access-0.5.2-py3-none-any.whl"
           tag: ${{steps.tag.outputs.tag}}
+          commit: main
