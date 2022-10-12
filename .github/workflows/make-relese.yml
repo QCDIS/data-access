@@ -19,15 +19,6 @@ jobs:
           python setup.py bdist_wheel
           python setup.py bdist_egg
 
-
-
       - uses: ncipollo/release-action@v1
         with:
           artifacts: "dist/multiply_data_access-0.5.2-py3-none-any.whl,dist/multiply_data_access-0.5.2-py3.9.egg"
-
-      - name: Create Release Notes
-        uses: docker://decathlon/release-notes-generator-action:2.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          USE_MILESTONE_TITLE: "false"
-          OUTPUT_FOLDER: temp_release_notes
