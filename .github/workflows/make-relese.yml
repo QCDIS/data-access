@@ -2,7 +2,6 @@ on: [push]
 
 jobs:
   conda:
-    name: Ex3 Linux
     runs-on: "ubuntu-latest"
     defaults:
       run:
@@ -12,8 +11,9 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: multiply
-          environment-file: environment.yml
+          environment-file: environment.yaml
           python-version: 3.9
       - run: |
           conda info
           conda list
+          python setup.py bdist_wheel
