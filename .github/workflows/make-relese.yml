@@ -21,4 +21,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: jupyterlab_vre
-          path: dist/multiply_data_access-0.5.2-py2.py3-none-any.whl
+          path: dist/multiply_data_access-0.5.2-py3-none-any.whl
