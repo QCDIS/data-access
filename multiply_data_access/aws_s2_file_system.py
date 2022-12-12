@@ -47,6 +47,19 @@ class AwsS2FileSystem(LocallyWrappedFileSystem):
         metafiles = ['qi/MSK_{}_{}'.format(qi, band) for qi, band in itertools.product(_QI_LIST, _S2_L1C_BANDS)]
         metafiles.append('metadata')
         metafiles.append('tileInfo')
+        
+        # added to update to newest file format
+        metafiles.append('inspire')
+        metafiles.append('manifest')        
+        metafiles.append('TCI')
+        metafiles.append('qi/FORMAT_CORRECTNESS')
+        metafiles.append('qi/GENERAL_QUALITY')
+        metafiles.append('qi/GEOMETRIC_QUALITY')
+        metafiles.append('qi/SENSOR_QUALITY')
+        metafiles.append('preview*')
+        metafiles.append('datastrip/*/metadata')
+        metafiles.append('auxiliary/ECMWFT')
+        
         retrieved_file_ref = self._get_file_ref(data_set_meta_info, metafiles=metafiles)
         if retrieved_file_ref is not None:
             file_refs.append(retrieved_file_ref)
