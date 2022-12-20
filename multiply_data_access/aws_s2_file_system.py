@@ -70,13 +70,20 @@ class AwsS2FileSystem(LocallyWrappedFileSystem):
         if not self._is_valid_identifier(data_set_meta_info.identifier):
             # consider throwing an exception
             return None
-        from sentinelhub import AwsTileRequest
+        
         tile_name = self._get_tile_name(data_set_meta_info.identifier)
         start_time_as_datetime = get_time_from_string(data_set_meta_info.start_time)
         time = start_time_as_datetime.strftime('%Y-%m-%d')
         aws_index = self._get_aws_index(data_set_meta_info.identifier)
-        request = AwsTileRequest(tile=tile_name, time=time, aws_index=aws_index,
-                                 bands=bands, metafiles=metafiles, data_folder=self._temp_dir)
+        
+        try:
+            from sentinelhub.aws import AwsTileRequest
+            from sentinelhub import DataCollection
+            request = AwsTileRequest(data_collection=DataCollection.SENTINEL2_L1C,tile=tile_name, time=time, aws_index=aws_index,bands=bands, metafiles=metafiles, data_folder=self._temp_dir)
+        except:
+            from sentinelhub import AwsTileRequest
+            request = AwsTileRequest(tile=tile_name, time=time, aws_index=aws_index,bands=bands, metafiles=metafiles, data_folder=self._temp_dir)
+        
         year = start_time_as_datetime.year
         month = start_time_as_datetime.month
         day = start_time_as_datetime.day
