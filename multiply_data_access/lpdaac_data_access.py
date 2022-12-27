@@ -23,7 +23,7 @@ __author__ = 'Tonio Fincke (Brockmann Consult GmbH),' \
 _SUPPORTED_DATA_TYPES = [DataTypeConstants.MODIS_MCD_43, DataTypeConstants.MODIS_MCD_15_A2]
 _DATA_OFFSETS = {DataTypeConstants.MODIS_MCD_43: 0, DataTypeConstants.MODIS_MCD_15_A2: 1}
 _DATA_INTERVALS = {DataTypeConstants.MODIS_MCD_43: 1, DataTypeConstants.MODIS_MCD_15_A2: 8}
-_BASE_URL = 'http://e4ftl01.cr.usgs.gov/'
+_BASE_URL = 'https://e4ftl01.cr.usgs.gov/' #_BASE_URL = 'http://e4ftl01.cr.usgs.gov/'
 _PLATFORM = 'MOTA'
 _FILE_SYSTEM_NAME = 'LpDaacFileSystem'
 _META_INFO_PROVIDER_NAME = 'LpDaacMetaInfoProvider'
@@ -187,18 +187,25 @@ class LpDaacFileSystem(LocallyWrappedFileSystem):
             raise ValueError('No password provided for Lp Daac File System')
         self._password = parameters['password']
         cj = CookieJar()
-        self._opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        
+        password_manager = urllib2.HTTPPasswordMgrWithDefaultRealm()
+        password_manager.add_password(None, "https://urs.earthdata.nasa.gov", self._username, self._password)
+        self._opener = urllib2.build_opener(urllib2.HTTPBasicAuthHandler(password_manager),urllib2.HTTPCookieProcessor(cj))        
+#         self._opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
     def _get_from_wrapped(self, data_set_meta_info: DataSetMetaInfo) -> Sequence[FileRef]:
         file_refs = []
         time = get_time_from_string(data_set_meta_info.start_time)
         file_url = '{}/{}/{}/{}.{:02d}.{:02d}/{}'.format(_BASE_URL, _PLATFORM, data_set_meta_info.data_type,
                                                          time.year, time.month, time.day, data_set_meta_info.identifier)
+        urllib2.install_opener(self._opener)
         request = urllib2.Request(file_url)
-        authorization = base64.encodebytes(str.encode('{}:{}'.format(self._username, self._password))). \
-            replace(b'\n', b'').decode()
-        request.add_header('Authorization', 'Basic {}'.format(authorization))
-        remote_file = self._opener.open(request)
+        remote_file = urllib2.urlopen(request)
+        
+#         authorization = base64.encodebytes(str.encode('{}:{}'.format(self._username, self._password))). \
+#             replace(b'\n', b'').decode()
+#         request.add_header('Authorization', 'Basic {}'.format(authorization))
+#         remote_file = self._opener.open(request)
         temp_url = '{}/{}'.format(self._temp_dir, data_set_meta_info.identifier)
         logging.info('Downloading {}'.format(data_set_meta_info.identifier))
         with open(temp_url, 'wb') as temp_file:

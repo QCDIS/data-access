@@ -47,6 +47,19 @@ class AwsS2FileSystem(LocallyWrappedFileSystem):
         metafiles = ['qi/MSK_{}_{}'.format(qi, band) for qi, band in itertools.product(_QI_LIST, _S2_L1C_BANDS)]
         metafiles.append('metadata')
         metafiles.append('tileInfo')
+        
+        # added to update to newest file format
+        metafiles.append('inspire')
+        metafiles.append('manifest')        
+        metafiles.append('TCI')
+        metafiles.append('qi/FORMAT_CORRECTNESS')
+        metafiles.append('qi/GENERAL_QUALITY')
+        metafiles.append('qi/GEOMETRIC_QUALITY')
+        metafiles.append('qi/SENSOR_QUALITY')
+        metafiles.append('preview*')
+        metafiles.append('datastrip/*/metadata')
+        metafiles.append('auxiliary/ECMWFT')
+        
         retrieved_file_ref = self._get_file_ref(data_set_meta_info, metafiles=metafiles)
         if retrieved_file_ref is not None:
             file_refs.append(retrieved_file_ref)
@@ -57,13 +70,20 @@ class AwsS2FileSystem(LocallyWrappedFileSystem):
         if not self._is_valid_identifier(data_set_meta_info.identifier):
             # consider throwing an exception
             return None
-        from sentinelhub import AwsTileRequest
+        
         tile_name = self._get_tile_name(data_set_meta_info.identifier)
         start_time_as_datetime = get_time_from_string(data_set_meta_info.start_time)
         time = start_time_as_datetime.strftime('%Y-%m-%d')
         aws_index = self._get_aws_index(data_set_meta_info.identifier)
-        request = AwsTileRequest(tile=tile_name, time=time, aws_index=aws_index,
-                                 bands=bands, metafiles=metafiles, data_folder=self._temp_dir)
+        
+        try:
+            from sentinelhub.aws import AwsTileRequest
+            from sentinelhub import DataCollection
+            request = AwsTileRequest(data_collection=DataCollection.SENTINEL2_L1C,tile=tile_name, time=time, aws_index=aws_index,bands=bands, metafiles=metafiles, data_folder=self._temp_dir)
+        except:
+            from sentinelhub import AwsTileRequest
+            request = AwsTileRequest(tile=tile_name, time=time, aws_index=aws_index,bands=bands, metafiles=metafiles, data_folder=self._temp_dir)
+        
         year = start_time_as_datetime.year
         month = start_time_as_datetime.month
         day = start_time_as_datetime.day
