@@ -5,16 +5,16 @@ Description
 
 This module contains the MULTIPLY data access API.
 """
-import pyproj
 
 from abc import ABCMeta, abstractmethod
-from typing import List, Sequence, Optional
 from datetime import datetime
+from typing import List, Sequence, Optional
+
+from multiply_core.observations import differs_by_name, get_relative_path
 from multiply_core.util import FileRef, are_times_equal, are_polygons_almost_equal, get_time_from_string, \
     reproject_to_wgs84
-from multiply_core.observations import differs_by_name, get_relative_path
-from shapely.wkt import loads
 from shapely.geometry import Polygon
+from shapely.wkt import loads
 
 __author__ = 'Alexander Löw (Ludwig Maximilians-Universität München), ' \
              'Tonio Fincke (Brockmann Consult GmbH)'
