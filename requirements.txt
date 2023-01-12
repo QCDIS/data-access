@@ -1,7 +1,7 @@
 beautifulsoup4
 html5lib
 lxml
-multiply_core @ https://github.com/QCDIS/multiply-core.git
+multiply_core
 shapely
 pytest
 pyyaml
