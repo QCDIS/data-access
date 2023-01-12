@@ -4,6 +4,11 @@ from setuptools import setup
 
 import os
 
+def read(file_name):
+    return open(os.path.join(os.path.dirname(__file__), file_name)).read()
+
+required = read('requirements.txt').splitlines()
+
 on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
     requirements = ['mock']
@@ -58,5 +63,5 @@ setup(name='multiply-data-access',
               'scihub_meta_info_provider = multiply_data_access:scihub_data_access.SciHubMetaInfoProviderAccessor'
           ],
       },
-      install_requires=requirements
+      install_requires=install_requires=required
       )
