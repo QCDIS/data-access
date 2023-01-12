@@ -12,7 +12,7 @@ else:
         'beautifulsoup4',
         'html5lib',
         'lxml',
-        'multiply_core',
+        'multiply_core @ https://github.com/QCDIS/multiply-core.git',
         'shapely',
         'pytest',
         'pyyaml',
