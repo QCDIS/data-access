@@ -5,5 +5,5 @@ multiply_core @ https://github.com/QCDIS/multiply-core.git
 shapely
 pytest
 pyyaml
-requests
+requests==2.28.2
 xarray
