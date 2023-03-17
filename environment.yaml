@@ -21,5 +21,6 @@ dependencies:
   - lxml
   - scipy
   - beautifulsoup4
+  - pip
   - pip:
     - git+https://github.com/QCDIS/multiply-core.git
