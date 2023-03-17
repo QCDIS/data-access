@@ -8,17 +8,7 @@ on_rtd = os.environ.get('READTHEDOCS') == 'True'
 if on_rtd:
     requirements = ['mock']
 else:
-    requirements = [
-        'beautifulsoup4',
-        'html5lib',
-        'lxml',
-        'multiply_core',
-        'shapely',
-        'pytest',
-        'pyyaml',
-        'requests',
-        'xarray'
-    ]
+    requirements = []
 requirements = []
 
 __version__ = None
