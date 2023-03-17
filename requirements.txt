@@ -1,0 +1,9 @@
+beautifulsoup4
+html5lib
+lxml
+multiply_core
+shapely
+pytest
+pyyaml
+requests==2.28.2
+xarray
