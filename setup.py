@@ -26,7 +26,7 @@ setup(
     description='MULTIPLY Data Access',
     author='MULTIPLY Team',
     packages=['multiply_data_access'],
-    install_requires=required,
+    install_requires=[],
     package_data={
         'multiply_data_access': ['*.yaml']
     },
