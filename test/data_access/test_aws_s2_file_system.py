@@ -7,6 +7,18 @@ from multiply_core.observations import DataTypeConstants
 from multiply_data_access.aws_s2_file_system import AwsS2FileSystem, AwsS2FileSystemAccessor
 from multiply_data_access.data_access import DataSetMetaInfo
 
+import urllib.request
+import zipfile
+
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/multiply-core/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
+
 OUTPUT_DIR = './test/test_data/aws_s2_download_dir/'
 
 
