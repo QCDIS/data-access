@@ -1,10 +1,22 @@
 __author__ = 'Tonio Fincke (Brockmann Consult GmbH)'
 
+import os
+
 from multiply_data_access.lpdaac_data_access import LpDaacMetaInfoProvider, LpDaacMetaInfoProviderAccessor
 from shapely.wkt import loads
 
+import urllib.request
+import zipfile
 
-path_to_json_file = './test/test_data/modis_store.json'
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
+path_to_json_file = base_path + 'modis_store.json'
 H17_V05_COVERAGE = 'POLYGON ((-13.05407289035348 39.99999999616804, -11.54700538146705 29.9999999970181, ' \
                 '1.127072786096139e-09 39.99999999616804, 9.96954409223065e-10 29.9999999970181, ' \
                 '-13.05407289035348 39.99999999616804))'

@@ -8,19 +8,29 @@ from multiply_data_access.local_file_system import LocalFileSystem
 from multiply_data_access.json_meta_info_provider import JsonMetaInfoProvider
 
 __author__ = 'Tonio Fincke (Brockmann Consult GmbH)'
+import urllib.request
+import zipfile
 
-AWS_S2_DATA_PATH = './test/test_data/aws_s2_data'
-EMPTY_PATH = './test/test_data/empty_dir'
-INCORRECT_AWS_S2_META_INFO_FILE = './test/test_data/non_existent_meta_info.json'
-EMPTY_AWS_S2_META_INFO_FILE = './test/test_data/empty_store.json'
-PATH_TO_S2_FILE = './test/test_data/aws_s2_data/29/S/QB/2017/9/4/0'
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
+AWS_S2_DATA_PATH = base_path + 'aws_s2_data'
+EMPTY_PATH = base_path + 'empty_dir'
+INCORRECT_AWS_S2_META_INFO_FILE = base_path + 'non_existent_meta_info.json'
+EMPTY_AWS_S2_META_INFO_FILE = base_path + 'empty_store.json'
+PATH_TO_S2_FILE = base_path + 'aws_s2_data/29/S/QB/2017/9/4/0'
 
 
 def test_put():
     # copy this so we don't mess up the original file
     path_to_incorrect_json_file = EMPTY_AWS_S2_META_INFO_FILE + '_2'
     shutil.copyfile(EMPTY_AWS_S2_META_INFO_FILE, path_to_incorrect_json_file)
-    expected_data_dir = './test/test_data/empty_dir/29/S/QB/2017/9/4/0'
+    expected_data_dir = base_path + 'empty_dir/29/S/QB/2017/9/4/0'
     try:
         local_file_system = LocalFileSystem(EMPTY_PATH, '')
         meta_info_provider = JsonMetaInfoProvider(path_to_incorrect_json_file, 'AWS_S2_L1C')
@@ -66,15 +76,15 @@ def test_update():
         assert 2 == len(all_available_files)
         assert 'AWS_S2_L1C' == all_available_files[0].data_type
         assert 'AWS_S2_L1C' == all_available_files[1].data_type
-        assert ('./test/test_data/aws_s2_data/29/S/QB/2017/9/4/0' == all_available_files[0].identifier and \
-               './test/test_data/aws_s2_data/34/V/CL/2016/11/22/0' == all_available_files[1].identifier) or \
-               ('./test/test_data/aws_s2_data/29/S/QB/2017/9/4/0' == all_available_files[1].identifier and \
-               './test/test_data/aws_s2_data/34/V/CL/2016/11/22/0' == all_available_files[0].identifier)
+        assert (base_path + 'aws_s2_data/29/S/QB/2017/9/4/0' == all_available_files[0].identifier and \
+               base_path + 'aws_s2_data/34/V/CL/2016/11/22/0' == all_available_files[1].identifier) or \
+               (base_path + 'aws_s2_data/29/S/QB/2017/9/4/0' == all_available_files[1].identifier and \
+               base_path + 'aws_s2_data/34/V/CL/2016/11/22/0' == all_available_files[0].identifier)
 
         all_registered_files = meta_info_provider.get_all_data()
         assert 2 == len(all_registered_files)
         assert 'AWS_S2_L1C' == all_registered_files[0].data_type
-        assert './test/test_data/aws_s2_data/34/V/CL/2016/11/22/0/' == all_registered_files[0].identifier
+        assert base_path + 'aws_s2_data/34/V/CL/2016/11/22/0/' == all_registered_files[0].identifier
         assert '2016-11-22 10:03:36' == all_registered_files[0].start_time
         assert '2016-11-22 10:03:36' == all_registered_files[0].end_time
         covered_geometry_bounds = loads(all_registered_files[0].coverage).bounds
@@ -83,7 +93,7 @@ def test_update():
         assert covered_geometry_bounds[2] == pytest.approx(19.45040137223655)
         assert covered_geometry_bounds[3] == pytest.approx(59.52863352307349)
         assert 'AWS_S2_L1C' == all_registered_files[1].data_type
-        assert './test/test_data/aws_s2_data/29/S/QB/2017/9/4/0' == all_registered_files[1].identifier
+        assert base_path + 'aws_s2_data/29/S/QB/2017/9/4/0' == all_registered_files[1].identifier
         assert '2017-09-04 11:18:25' == all_registered_files[1].start_time
         assert '2017-09-04 11:18:25' == all_registered_files[1].end_time
         covered_geometry_bounds = loads(all_registered_files[1].coverage).bounds

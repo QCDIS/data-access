@@ -1,3 +1,5 @@
+import os
+
 from multiply_data_access.data_set_meta_info_extraction import AwsS2MetaInfoExtractor, S2L1CMetaInfoExtractor, \
     AwsS2L2MetaInfoExtractor, MODISMCD43MetaInfoExtractor, MODISMCD15A2MetaInfoExtractor, S1SlcMetaInfoExtractor, \
     S1SpeckledMetaInfoExtractor, S2L2MetaInfoExtractor
@@ -6,12 +8,23 @@ from shapely import wkt
 from shapely.wkt import loads
 
 __author__ = "Tonio Fincke (Brockmann Consult GmbH)"
+import urllib.request
+import zipfile
 
-path_to_s2_dir = './test/test_data/aws_s2_data/29/S/QB/2017/9/4/0/'
-path_to_s2_l1c_dir = './test/test_data/S2B_MSIL1C_20180819T100019_N0206_R122_T32TQR_20180819T141300'
-path_to_other_s2_l1c_dir = './test/test_data/S2A_MSIL1C_20180510T094031_N0206_R036_T35VNE_20180510T114819'
-path_to_aws_s2_l2_dir = './test/test_data/s2_l2_dir/'
-path_to_s2_l2_dir = './test/test_data/S2A_MSIL1C_20180510T094031_N0206_R036_T35VNE_20180510T114819-ac'
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
+
+path_to_s2_dir = base_path + 'aws_s2_data/29/S/QB/2017/9/4/0/'
+path_to_s2_l1c_dir = base_path + 'S2B_MSIL1C_20180819T100019_N0206_R122_T32TQR_20180819T141300'
+path_to_other_s2_l1c_dir = base_path + 'S2A_MSIL1C_20180510T094031_N0206_R036_T35VNE_20180510T114819'
+path_to_aws_s2_l2_dir = base_path + 's2_l2_dir/'
+path_to_s2_l2_dir = base_path + 'S2A_MSIL1C_20180510T094031_N0206_R036_T35VNE_20180510T114819-ac'
 
 
 def test_s1_slc_meta_info_extractor_name():
@@ -22,7 +35,7 @@ def test_s1_slc_meta_info_extractor_name():
 
 def test_s1_slc_meta_info_extractor_extract_meta_info():
     extractor = S1SlcMetaInfoExtractor()
-    path_to_s1_dir = './test/test_data/S1_SLC/S1A_IW_SLC__1SDV_20180603T053307_20180603T053334_022188_026669_A432'
+    path_to_s1_dir = base_path + 'S1_SLC/S1A_IW_SLC__1SDV_20180603T053307_20180603T053334_022188_026669_A432'
     data_set_meta_info = extractor.extract_meta_info(path_to_s1_dir)
     assert 'S1_SLC' == data_set_meta_info.data_type
     assert 'S1A_IW_SLC__1SDV_20180603T053307_20180603T053334_022188_026669_A432.zip' == data_set_meta_info.identifier
@@ -43,7 +56,7 @@ def test_s1_speckled_meta_info_extractor_name():
 
 def test_s1_speckled_meta_info_extractor_extract_meta_info():
     extractor = S1SpeckledMetaInfoExtractor()
-    path_to_s1_dir = './test/test_data/s1_speckled/' \
+    path_to_s1_dir = base_path + 's1_speckled/' \
                      'S1A_IW_SLC__1SDV_20170613T054059_20170613T054126_017011_01C547_62FA_GC_RC_No_Su_Co_speckle.nc'
     data_set_meta_info = extractor.extract_meta_info(path_to_s1_dir)
     assert 'S1_Speckled' == data_set_meta_info.data_type

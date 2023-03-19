@@ -3,8 +3,18 @@ import os
 import shutil
 
 __author__ = "Tonio Fincke (Brockmann Consult GmbH)"
+import urllib.request
+import zipfile
 
-path_to_json_file = './test/test_data/test_meta_info.json'
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
+path_to_json_file = base_path + 'test_meta_info.json'
 
 
 def test_get_name():

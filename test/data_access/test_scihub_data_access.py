@@ -6,10 +6,20 @@ from multiply_data_access.scihub_data_access import SciHubFileSystem, SciHubFile
     SciHubMetaInfoProvider, SciHubMetaInfoProviderAccessor
 
 __author__ = 'Tonio Fincke (Brockmann Consult GmbH)'
+import urllib.request
+import zipfile
 
-META_INFO_FILE = './test/test_data/local_scihub_store.json'
-_scihub_DIR = './test/test_data/scihub_dir'
-_scihub_TEMP_DIR = './test/test_data/scihub_temp_dir'
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
+META_INFO_FILE = base_path + 'local_scihub_store.json'
+_scihub_DIR = base_path + 'scihub_dir'
+_scihub_TEMP_DIR = base_path + 'scihub_temp_dir'
 
 
 def test_scihub_meta_info_provider_name():

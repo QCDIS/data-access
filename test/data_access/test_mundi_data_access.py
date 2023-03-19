@@ -8,12 +8,22 @@ from multiply_data_access.mundi_data_access import LocallyWrappedMundiMetaInfoPr
 from shapely.wkt import loads
 
 __author__ = 'Tonio Fincke (Brockmann Consult GmbH)'
+import urllib.request
+import zipfile
 
-META_INFO_FILE = './test/test_data/local_mundi_store.json'
-_MUNDI_DIR = './test/test_data/mundi_dir'
-_MUNDI_REST_DIR = './test/test_data/mundi_rest_dir'
-_MUNDI_TEMP_DIR = './test/test_data/mundi_temp_dir'
-_MUNDI_REST_TEMP_DIR = './test/test_data/mundi_rest_temp_dir'
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
+META_INFO_FILE = base_path + 'local_mundi_store.json'
+_MUNDI_DIR = base_path + 'mundi_dir'
+_MUNDI_REST_DIR = base_path + 'mundi_rest_dir'
+_MUNDI_TEMP_DIR = base_path + 'mundi_temp_dir'
+_MUNDI_REST_TEMP_DIR = base_path + 'mundi_rest_temp_dir'
 
 
 def test_locally_wrapped_mundi_meta_info_provider_name():

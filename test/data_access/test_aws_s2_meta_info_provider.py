@@ -1,9 +1,23 @@
 __author__ = 'Tonio Fincke (Brockmann Consult GmbH)'
 
+import os
+
 from multiply_core.util import get_time_from_string
 from multiply_data_access.aws_s2_meta_info_provider import AwsS2MetaInfoProvider, AwsS2MetaInfoProviderAccessor, \
     _get_tile_stripes, _get_center_tile_identifiers, TileDescription
 from shapely.wkt import loads
+
+import urllib.request
+import zipfile
+
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
 
 BARRAX_POLYGON = "POLYGON((-2.20397502663252 39.09868106889479,-1.9142106223355313 39.09868106889479," \
                  "-1.9142106223355313 38.94504502508093,-2.20397502663252 38.94504502508093," \
@@ -11,7 +25,7 @@ BARRAX_POLYGON = "POLYGON((-2.20397502663252 39.09868106889479,-1.91421062233553
 BARRAX_TILE = 'POLYGON((-3.00023345437724 39.7502679265611,-3.00023019602957 38.7608644567253,-1.73659678081167 ' \
               '38.7540360477761,-1.71871965133358 39.7431961916792,-3.00023345437724 39.7502679265611))'
 
-path_to_json_file = './test/test_data/single_store.json'
+path_to_json_file = base_path + 'single_store.json'
 SQB_29_COVERAGE = "POLYGON ((-6.72492653925008 37.9255905472328, -6.75467671036015 36.9366503972109, " \
                   "-5.52344565574506 36.9069718125641, -5.47744908496312 37.8948386584933, " \
                   "-6.72492653925008 37.9255905472328))"
@@ -138,7 +152,7 @@ def test_query():
     data_set_meta_infos = aws_s2_meta_info_provider.query(query_string)
 
     assert 2 == len(data_set_meta_infos)
-    assert './test/test_data/aws_s2_data/29/S/QB/2017/9/4/0/' == data_set_meta_infos[0].identifier
+    assert base_path + 'aws_s2_data/29/S/QB/2017/9/4/0/' == data_set_meta_infos[0].identifier
     assert '30/S/TG/2017/9/4/0' == data_set_meta_infos[1].identifier
     for data_set_meta_info in data_set_meta_infos:
         assert data_set_meta_info.start_time == '2017-09-04T11:18:25'
@@ -160,7 +174,7 @@ def test_query_local():
     data_set_meta_infos = aws_s2_meta_info_provider.query_local(query_string)
 
     assert 1 == len(data_set_meta_infos)
-    assert './test/test_data/aws_s2_data/29/S/QB/2017/9/4/0/' == data_set_meta_infos[0].identifier
+    assert base_path + 'aws_s2_data/29/S/QB/2017/9/4/0/' == data_set_meta_infos[0].identifier
     assert data_set_meta_infos[0].start_time == '2017-09-04T11:18:25'
     assert data_set_meta_infos[0].end_time == '2017-09-04T11:18:25'
     assert data_set_meta_infos[0].data_type == 'AWS_S2_L1C'
