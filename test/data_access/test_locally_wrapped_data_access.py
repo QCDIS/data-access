@@ -242,14 +242,14 @@ class TestWrappedFileSystem(LocallyWrappedFileSystem):
 
 
 def test_locally_wrappd_file_system_create():
-    parameters = {'some_parameter': 'something', 'path': base_path + '', 'pattern': '/dt/yy/mm/dd/'}
+    parameters = {'some_parameter': 'something', 'path': base_path + '', 'pattern': '/dt/yy/MM/dd/'}
     wrapped_file_system = TestWrappedFileSystem(parameters)
 
     assert wrapped_file_system is not None
 
 
 def test_locally_wrapped_file_system_get_name():
-    parameters = {'some_parameter': 'something', 'path': base_path + '', 'pattern': '/dt/yy/mm/dd/'}
+    parameters = {'some_parameter': 'something', 'path': base_path + '', 'pattern': '/dt/yy/MM/dd/'}
     wrapped_file_system = TestWrappedFileSystem(parameters)
 
     assert 'TestWrappedFileSystem' == wrapped_file_system.name()
@@ -257,7 +257,7 @@ def test_locally_wrapped_file_system_get_name():
 
 
 def test_wrapped_file_system_get_as_dict():
-    parameters = {'some_parameter': 'something', 'path': base_path + '', 'pattern': '/dt/yy/mm/dd/'}
+    parameters = {'some_parameter': 'something', 'path': base_path + '', 'pattern': '/dt/yy/MM/dd/'}
     wrapped_file_system = TestWrappedFileSystem(parameters)
 
     provider_as_dict = wrapped_file_system.get_as_dict()
@@ -272,7 +272,7 @@ def test_wrapped_file_system_get_as_dict():
     assert 'path' in provider_as_dict['parameters']
     assert base_path + '' == provider_as_dict['parameters']['path']
     assert 'pattern' in provider_as_dict['parameters']
-    assert '/dt/yy/mm/dd/' == provider_as_dict['parameters']['pattern']
+    assert '/dt/yy/MM/dd/' == provider_as_dict['parameters']['pattern']
 
 
 class TypeXValidator(DataValidator):

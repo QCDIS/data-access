@@ -345,7 +345,7 @@ class DataAccessComponent(object):
     #
 
     def create_local_data_store(self, base_dir: Optional[str] = None, meta_info_file: Optional[str] = None,
-                                base_pattern: Optional[str] = '/dt/yy/mm/dd/', id: Optional[str] = None,
+                                base_pattern: Optional[str] = '/dt/yy/MM/dd/', id: Optional[str] = None,
                                 supported_data_types: Optional[str] = None):
         """
         Adds a a new local data store and saves it permanently. It will consist of a LocalFileSystem and a
@@ -358,7 +358,7 @@ class DataAccessComponent(object):
         folder. If not provided, an empty file will be created and filled with the data that match the base directory
         and the base pattern.
         :param base_pattern: A pattern that allows to create an order in the base directory. Available options are 'dt'
-        for the data type, 'yy' for the year, 'mm' for the month, and 'dd' for the day, arrangeable in any oder. If no
+        for the data type, 'yy' for the year, 'MM' for the month, and 'dd' for the day, arrangeable in any oder. If no
         pattern is given, all data will simply be written into the base directory.
         :param id: An identifier for the Data Store. If there already exists a Data Store with the name, an additional
         number will be added to the name.

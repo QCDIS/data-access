@@ -64,7 +64,7 @@ This will create a new data store consisting of a LocalFileSystem and a JsonMeta
     INFO:root:Scanning local file system, not remote
     INFO:root:Scanning local file system, not remote
     INFO:root:Scanning local file system, not remote
-    $ dac.create_local_data_store(base_dir='/user/dir/', , meta_info_file='/user/dir/meta_store.json', base_pattern='mm/dt/', id='cgfsvt', supported_data_types='TYPE_A,TYPE_B')
+    $ dac.create_local_data_store(base_dir='/user/dir/', , meta_info_file='/user/dir/meta_store.json', base_pattern='MM/dt/', id='cgfsvt', supported_data_types='TYPE_A,TYPE_B')
     INFO:root:Added local data store cgfsvt
 
 

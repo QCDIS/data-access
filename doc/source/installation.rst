@@ -56,7 +56,7 @@ These entries have settings that look like the following:
         FileSystem:
             parameters:
                 path: /path/to/user_home/.multiply/aws_s2/
-                pattern: /dt/yy/mm/dd/
+                pattern: /dt/yy/MM/dd/
                 temp_dir: /path/to/user_home/.multiply/aws_s2/temp/
             type: AwsS2FileSystem
         Id: aws_s2
@@ -69,7 +69,7 @@ These entries have settings that look like the following:
 Consider especially the parameters ``path`` and ``pattern`` of the FileSystem.
 These parameters determine where downloaded data will be saved.
 ``path`` determines the root path, ``pattern`` determines a pattern for adding an additional relative graph.
-``dt`` stands here for the data type, ``yy`` for the year, ``mm`` for the month, and ``dd`` for the day of the month.
+``dt`` stands here for the data type, ``yy`` for the year, ``MM`` for the month, and ``dd`` for the day of the month.
 So, if you download S2 L1C data in the AWS format for the 26th of April, 2018,
 using the above configuration it would be saved to
 ``/path/to/user_home/.multiply/aws_s2/aws_s2_l1c/2018/4/26/``.
@@ -105,7 +105,7 @@ The entry should then look something like this:
             username: earthdata_login_user_name
             password: earthdata_login_password
             path: /path/to/data/modis/
-            pattern: /dt/yy/mm/dd/
+            pattern: /dt/yy/MM/dd/
         Id: MODIS Data
         MetaInfoProvider:
             type: LpDaacMetaInfoProvider

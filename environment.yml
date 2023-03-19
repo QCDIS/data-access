@@ -24,6 +24,8 @@ dependencies:
   - pyshp
   - pytest
   - xarray
+  - netcdf4
+  - h5netcdf
   - pip
   - pip:
       - .

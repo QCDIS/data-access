@@ -44,8 +44,8 @@ _DATA_TYPE_PARAMETER_DICTS = {
     DataTypeConstants.S1_SLC:
         {'platform': 'Sentinel1', 'processingLevel': 'L1_', 'productType': 'SLC',
          'baseBuckets': ['s1-l1-slc', 's1-l1-slc-{YYYY}', 's1-l1-slc-{YYYY}-q{q}'],
-         'storageStructure': 'YYYY/MM/DD/mm/pp/', 'excludes': [],
-         'placeholders': {'mm': {'start': 4, 'end': 6}, 'pp': {'start': 14, 'end': 16}}},
+         'storageStructure': 'YYYY/MM/DD/MM/pp/', 'excludes': [],
+         'placeholders': {'MM': {'start': 4, 'end': 6}, 'pp': {'start': 14, 'end': 16}}},
     DataTypeConstants.S2_L1C:
         {'platform': 'Sentinel2', 'processingLevel': 'L1C', 'instrument': 'MSI', 'productType': 'IMAGE',
          'baseBuckets': ['s2-l1c-{YYYY}-q{q}', 's2-l1c-{YYYY}', 's2-l1c'], 'storageStructure': 'UU/L/SS/YYYY/MM/DD/',

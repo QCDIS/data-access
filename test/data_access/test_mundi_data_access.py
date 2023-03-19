@@ -399,7 +399,7 @@ def test_mundi_obs_file_system_accessor_name():
 
 
 def test_mundi_obs_file_system_accessor_create_from_parameters():
-    mundi_parameters = {'path': _MUNDI_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _MUNDI_TEMP_DIR}
+    mundi_parameters = {'path': _MUNDI_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_TEMP_DIR}
     mundi_file_system = MundiObsFileSystemAccessor.create_from_parameters(mundi_parameters)
 
     assert mundi_file_system is not None
@@ -409,7 +409,7 @@ def test_mundi_obs_file_system_accessor_create_from_parameters():
 def test_mundi_obs_file_system_name():
     assert 'MundiFileSystem' == MundiObsFileSystem.name()
 
-    mundi_parameters = {'path': _MUNDI_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _MUNDI_TEMP_DIR}
+    mundi_parameters = {'path': _MUNDI_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_TEMP_DIR}
     mundi_file_system = MundiObsFileSystemAccessor.create_from_parameters(mundi_parameters)
     assert 'MundiFileSystem' == mundi_file_system.name()
 
@@ -417,7 +417,7 @@ def test_mundi_obs_file_system_name():
 @pytest.mark.skip(reason='Test actually performs downloading and needs authorization')
 def test_mundi_obs_file_system_get():
     try:
-        mundi_parameters = {'path': _MUNDI_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _MUNDI_TEMP_DIR}
+        mundi_parameters = {'path': _MUNDI_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_TEMP_DIR}
         mundi_parameters['access_key_id'] = ''  # enter access key id here
         mundi_parameters['secret_access_key'] = ''  # enter secret access key here
         mundi_file_system = MundiObsFileSystemAccessor.create_from_parameters(mundi_parameters)
@@ -445,7 +445,7 @@ def test_mundi_obs_file_system_get():
 
 
 def test_mundi_obs_file_system_get_wrapped_parameters_as_dict():
-    mundi_parameters = {'path': _MUNDI_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _MUNDI_TEMP_DIR}
+    mundi_parameters = {'path': _MUNDI_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_TEMP_DIR}
     mundi_file_system = MundiObsFileSystemAccessor.create_from_parameters(mundi_parameters)
 
     mundi_file_system_as_dict = mundi_file_system._get_wrapped_parameters_as_dict()
@@ -509,7 +509,7 @@ def test_mundi_rest_file_system_accessor_name():
 
 
 def test_mundi_rest_file_system_accessor_create_from_parameters():
-    mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
+    mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
     mundi_file_system = MundiRestFileSystemAccessor.create_from_parameters(mundi_parameters)
 
     assert mundi_file_system is not None
@@ -519,7 +519,7 @@ def test_mundi_rest_file_system_accessor_create_from_parameters():
 def test_mundi_rest_file_system_name():
     assert 'MundiRestFileSystem' == MundiRestFileSystem.name()
 
-    mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
+    mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
     mundi_file_system = MundiRestFileSystemAccessor.create_from_parameters(mundi_parameters)
     assert 'MundiRestFileSystem' == mundi_file_system.name()
 
@@ -527,7 +527,7 @@ def test_mundi_rest_file_system_name():
 @pytest.mark.skip(reason='Test actually performs downloading')
 def test_mundi_rest_file_system_get_s1():
     try:
-        mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
+        mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
         mundi_file_system = MundiRestFileSystemAccessor.create_from_parameters(mundi_parameters)
         data_set_meta_info = DataSetMetaInfo(coverage='POLYGON ((9.1527709999999995 54.2447889999999973, '
                                                       '13.1172269999999997 54.6578639999999965, '
@@ -554,7 +554,7 @@ def test_mundi_rest_file_system_get_s1():
 @pytest.mark.skip(reason='Test actually performs downloading')
 def test_mundi_rest_file_system_get_s2():
     try:
-        mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
+        mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
         mundi_file_system = MundiRestFileSystemAccessor.create_from_parameters(mundi_parameters)
         # data_set_meta_info = DataSetMetaInfo(coverage='POLYGON((9.8 53.6,10.2 53.6,10.2 53.4,9.8 53.4,9.8 53.6))',
         #                                      start_time='2018-09-26', end_time='2018-09-26', data_type='S2_L1C',
@@ -583,7 +583,7 @@ def test_mundi_rest_file_system_get_s2():
 
 
 def test_mundi_rest_file_system_get_wrapped_parameters_as_dict():
-    mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
+    mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
     mundi_file_system = MundiRestFileSystemAccessor.create_from_parameters(mundi_parameters)
 
     mundi_file_system_as_dict = mundi_file_system._get_wrapped_parameters_as_dict()

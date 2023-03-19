@@ -101,7 +101,7 @@ def test_create_local_data_store():
     data_access_component = DataAccessComponent()
     data_access_component.create_local_data_store(base_dir=base_path + '',
                                                   meta_info_file=base_path + 'meta_store.json',
-                                                  base_pattern='mm/dt/', id='cgfsvt',
+                                                  base_pattern='MM/dt/', id='cgfsvt',
                                                   supported_data_types='TYPE_A,TYPE_B')
 
 

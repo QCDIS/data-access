@@ -21,13 +21,13 @@ base_path = '/tmp/test_data/'
 
 
 def test_get_name():
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
     assert 'LocalFilesystem', local_file_system.name()
     assert 'LocalFilesystem', LocalFileSystem.name()
 
 
 def test_get_one_file():
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
     data_set_meta_info = DataSetMetaInfo('doesn\'t matter', '2017-08-21', '2017-08-21', 'my_data_type', '')
     file_refs = local_file_system.get(data_set_meta_info)
     assert 1, len(file_refs)
@@ -38,7 +38,7 @@ def test_get_one_file():
 
 
 def test_get_two_files():
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
     data_set_meta_info = DataSetMetaInfo('doesn\'t matter', '2017-08-21', '2017-08-25', 'my_data_type', '')
     file_refs = local_file_system.get(data_set_meta_info)
     assert 2, len(file_refs)
@@ -53,28 +53,28 @@ def test_get_two_files():
 
 
 def test_get_invalid_time():
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
     data_set_meta_info = DataSetMetaInfo('doesn\'t matter', '2017-07-19', '2017-07-20', 'my_data_type', '')
     file_refs = local_file_system.get(data_set_meta_info)
     assert 0 == len(file_refs)
 
 
 def test_get_invalid_data_type():
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
     data_set_meta_info = DataSetMetaInfo('doesn\'t matter', '2017-08-21', '2017-08-21', 'my_other_data_type', '')
     file_refs = local_file_system.get(data_set_meta_info)
     assert 0 == len(file_refs)
 
 
 def test_get_invalid_identifier():
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
     data_set_meta_info = DataSetMetaInfo('doesn\'t matter', '2017-08-21', '2017-08-21', 'my_data_type', ' rtfghnmchfj')
     file_refs = local_file_system.get(data_set_meta_info)
     assert 0 == len(file_refs)
 
 
 def test_get_weird_pattern():
-    local_file_system = LocalFileSystem(base_path + '', '/mm/')
+    local_file_system = LocalFileSystem(base_path + '', '/MM/')
     data_set_meta_info = DataSetMetaInfo('doesn\'t matter', '2017-06-21', '2017-06-21', 'doesn\'t matter', '')
     file_refs = local_file_system.get(data_set_meta_info)
     assert 1, len(file_refs)
@@ -85,7 +85,7 @@ def test_get_weird_pattern():
 
 
 def test_put():
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
     url = open('gfhnfd.nc', 'w+').name
     data_set_meta_info = DataSetMetaInfo('doesn\'t matter', '2016-12-15', '2016-12-16', 'my_data_type',
                                          'doesn\'t matter')
@@ -102,7 +102,7 @@ def test_put():
 
 
 def test_remove_one_file_in_folder():
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
     if not os.path.exists(base_path + 'my_data_type/2015/12/15/'):
         os.makedirs(base_path + 'my_data_type/2015/12/15/')
     open(base_path + 'my_data_type/2015/12/15/gfhnfd.nc', 'w+')
@@ -116,7 +116,7 @@ def test_remove_one_file_in_folder():
 
 
 def test_remove_two_files_in_folder():
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
     if not os.path.exists(base_path + 'my_data_type/2015/12/15/'):
         os.makedirs(base_path + 'my_data_type/2015/12/15/')
     open(base_path + 'my_data_type/2015/12/15/gfhnfd.nc', 'w+')
@@ -155,7 +155,7 @@ def test_scan():
         def differs_by_name(cls):
             return False
 
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
     data_validation.add_validator(MyValidator())
 
     class MyDataSetMetaInfoExtractor(DataSetMetaInfoExtractor):
@@ -179,7 +179,7 @@ def test_scan():
 
 
 def test_get_parameters_as_dict():
-    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/mm/dd/')
+    local_file_system = LocalFileSystem(base_path + '', '/dt/yy/MM/dd/')
 
     parameters_as_dict = local_file_system.get_parameters_as_dict()
 
@@ -187,4 +187,4 @@ def test_get_parameters_as_dict():
     assert 'path' in parameters_as_dict.keys()
     assert base_path + '' == parameters_as_dict['path']
     assert 'pattern' in parameters_as_dict.keys()
-    assert '/dt/yy/mm/dd/' == parameters_as_dict['pattern']
+    assert '/dt/yy/MM/dd/' == parameters_as_dict['pattern']

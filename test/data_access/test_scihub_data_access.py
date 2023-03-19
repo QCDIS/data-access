@@ -157,7 +157,7 @@ def test_scihub_file_system_accessor_name():
 
 
 def test_scihub_file_system_accessor_create_from_parameters():
-    scihub_parameters = {'path': _scihub_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _scihub_TEMP_DIR,
+    scihub_parameters = {'path': _scihub_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _scihub_TEMP_DIR,
                          'username':'', 'password': ''}
     scihub_file_system = SciHubFileSystemAccessor.create_from_parameters(scihub_parameters)
 
@@ -167,7 +167,7 @@ def test_scihub_file_system_accessor_create_from_parameters():
 
 def test_scihub_file_system_name():
     assert 'SciHubFileSystem' == SciHubFileSystem.name()
-    scihub_parameters = {'path': _scihub_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _scihub_TEMP_DIR,
+    scihub_parameters = {'path': _scihub_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _scihub_TEMP_DIR,
                          'username':'', 'password': ''}
     scihub_file_system = SciHubFileSystemAccessor.create_from_parameters(scihub_parameters)
     assert 'SciHubFileSystem' == scihub_file_system.name()
@@ -176,7 +176,7 @@ def test_scihub_file_system_name():
 @pytest.mark.skip(reason='Test actually performs downloading and needs authorization')
 def test_scihub_file_system_get():
     try:
-        scihub_parameters = {'path': _scihub_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _scihub_TEMP_DIR}
+        scihub_parameters = {'path': _scihub_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _scihub_TEMP_DIR}
         scihub_parameters['username'] = '' # enter access key id here
         scihub_parameters['password'] = '' # enter secret access key here
         scihub_file_system = SciHubFileSystemAccessor.create_from_parameters(scihub_parameters)
@@ -197,7 +197,7 @@ def test_scihub_file_system_get():
 
 
 def test_scihub_file_system_get_wrapped_parameters_as_dict():
-    scihub_parameters = {'path': _scihub_DIR, 'pattern': '/dt/yy/mm/dd/', 'temp_dir': _scihub_TEMP_DIR, 'username': '',
+    scihub_parameters = {'path': _scihub_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _scihub_TEMP_DIR, 'username': '',
                          'password': ''}
     scihub_file_system = SciHubFileSystemAccessor.create_from_parameters(scihub_parameters)
 
