@@ -7,6 +7,8 @@ from multiply_data_access.data_access import DataSetMetaInfo
 from multiply_data_access.general_remote_access import HttpFileSystem, HttpFileSystemAccessor, \
     HttpMetaInfoProvider, HttpMetaInfoProviderAccessor
 
+from shapely import wkt
+
 import urllib.request
 import zipfile
 
@@ -72,8 +74,8 @@ def test_query_wrapped_meta_info_provider_eles():
     data_set_meta_infos = provider._query_wrapped_meta_info_provider(query_string)
 
     assert 1 == len(data_set_meta_infos)
-    expected_aster_coverage = loads('POLYGON((-7. 42., -7. 43., -6. 43., -6. 42., -7. 42.))')
-    aster_coverage = loads(data_set_meta_infos[0].coverage)
+    expected_aster_coverage = wkt.loads('POLYGON((-7. 42., -7. 43., -6. 43., -6. 42., -7. 42.))')
+    aster_coverage = wkt.loads(data_set_meta_infos[0].coverage)
     assert expected_aster_coverage.almost_equals(aster_coverage)
     assert '' == data_set_meta_infos[0].start_time
     assert '' == data_set_meta_infos[0].end_time

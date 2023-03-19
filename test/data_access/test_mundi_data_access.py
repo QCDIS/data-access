@@ -5,7 +5,7 @@ from multiply_data_access import DataSetMetaInfo
 from multiply_data_access.mundi_data_access import LocallyWrappedMundiMetaInfoProvider, \
     LocallyWrappedMundiMetaInfoProviderAccessor, MundiObsFileSystem, MundiObsFileSystemAccessor, MundiRestFileSystem, \
     MundiRestFileSystemAccessor, MundiMetaInfoProvider, MundiMetaInfoProviderAccessor
-from shapely.wkt import loads
+from shapely import wkt
 
 __author__ = 'Tonio Fincke (Brockmann Consult GmbH)'
 
@@ -79,14 +79,14 @@ def test_locally_wrapped_mundi_meta_info_provider_query_s2():
     assert 2 == len(data_set_meta_infos)
 
     assert 'S2B_MSIL1C_20180602T104019_N0206_R008_T32UNE_20180602T132118' == data_set_meta_infos[0].identifier
-    expected_coverage = loads('POLYGON ((10.3882277619999996 54.1384156120000029, '
+    expected_coverage = wkt.loads('POLYGON ((10.3882277619999996 54.1384156120000029, '
                               '10.3173421249999997 54.0163176499999977, 10.2348201129999996 53.8730417960000025, '
                               '10.1528176469999991 53.7297406859999995, 10.0714324099999999 53.5864079979999985, '
                               '9.9905949619999994 53.4430542019999990, 9.9101521629999993 53.2996597570000006, '
                               '9.8301509550000006 53.1562272170000014, 9.8297230889999998 53.1554540790000019, '
                               '8.9997008679999997 53.1611735449999969, 8.9996937989999992 54.1481041039999980, '
                               '10.3882277619999996 54.1384156120000029))')
-    coverage = loads(data_set_meta_infos[0].coverage)
+    coverage = wkt.loads(data_set_meta_infos[0].coverage)
     assert coverage.almost_equals(expected_coverage)
 
     assert 'S2_L1C' == data_set_meta_infos[0].data_type
@@ -94,7 +94,7 @@ def test_locally_wrapped_mundi_meta_info_provider_query_s2():
     assert '2018-06-02T10:40:19Z' == data_set_meta_infos[0].end_time
 
     assert 'S2A_MSIL1C_20180604T103021_N0206_R108_T32UNE_20180604T141551' == data_set_meta_infos[1].identifier
-    expected_coverage = loads('POLYGON ((9.5329991839999995 54.1443829669999985, '
+    expected_coverage = wkt.loads('POLYGON ((9.5329991839999995 54.1443829669999985, '
                               '9.6393092639999995 54.1279838920000032, 9.7303900619999997 54.1138008249999984, '
                               '9.7304462029999996 54.1139137250000033, 9.7459873600000009 54.1115134209999979, '
                               '9.7459783400000006 54.1114953069999984, 9.7461166410000004 54.1114721849999967, '
@@ -107,7 +107,7 @@ def test_locally_wrapped_mundi_meta_info_provider_query_s2():
                               '10.4515281689999995 53.9901149660000002, 10.6729949840000007 53.9495901889999985, '
                               '10.6415649559999999 53.1498598900000019, 8.9997008679999997 53.1611735449999969, '
                               '8.9996937989999992 54.1481041039999980, 9.5329991839999995 54.1443829669999985))')
-    coverage = loads(data_set_meta_infos[1].coverage)
+    coverage = wkt.loads(data_set_meta_infos[1].coverage)
     assert coverage.almost_equals(expected_coverage)
     assert 'S2_L1C' == data_set_meta_infos[1].data_type
     assert '2018-06-04T10:30:21Z' == data_set_meta_infos[1].start_time
@@ -124,30 +124,30 @@ def test_locally_wrapped_mundi_meta_info_provider_query_s1():
     assert 3 == len(data_set_meta_infos)
 
     assert 'S1A_IW_SLC__1SDV_20180601T170037_20180601T170104_022166_0265B3_466C' == data_set_meta_infos[0].identifier
-    expected_coverage = loads('POLYGON ((9.1527709999999995 54.2447889999999973, '
+    expected_coverage = wkt.loads('POLYGON ((9.1527709999999995 54.2447889999999973, '
                               '13.1172269999999997 54.6578639999999965, 13.5328199999999992 53.0389899999999983, '
                               '9.7198080000000004 52.6297950000000014, 9.1527709999999995 54.2447889999999973))')
-    coverage = loads(data_set_meta_infos[0].coverage)
+    coverage = wkt.loads(data_set_meta_infos[0].coverage)
     assert coverage.almost_equals(expected_coverage)
     assert 'S1_SLC' == data_set_meta_infos[0].data_type
     assert '2018-06-01T17:00:37Z' == data_set_meta_infos[0].start_time
     assert '2018-06-01T17:00:37Z' == data_set_meta_infos[0].end_time
 
     assert 'S1B_IW_SLC__1SDV_20180602T054039_20180602T054107_011190_014887_B851' == data_set_meta_infos[1].identifier
-    expected_coverage = loads('POLYGON ((10.0823180000000008 52.4006839999999983, '
+    expected_coverage = wkt.loads('POLYGON ((10.0823180000000008 52.4006839999999983, '
                               '6.2640330000000004 52.8124690000000001, 6.6777379999999997 54.4328689999999966, '
                               '10.6465929999999993 54.0172839999999965, 10.0823180000000008 52.4006839999999983))')
-    coverage = loads(data_set_meta_infos[1].coverage)
+    coverage = wkt.loads(data_set_meta_infos[1].coverage)
     assert coverage.almost_equals(expected_coverage)
     assert 'S1_SLC' == data_set_meta_infos[1].data_type
     assert '2018-06-02T05:40:39Z' == data_set_meta_infos[1].start_time
     assert '2018-06-02T05:40:39Z' == data_set_meta_infos[1].end_time
 
     assert 'S1A_IW_SLC__1SDV_20180603T053307_20180603T053334_022188_026669_A432' == data_set_meta_infos[2].identifier
-    expected_coverage = loads('POLYGON ((12.1212300000000006 52.4480130000000031, '
+    expected_coverage = wkt.loads('POLYGON ((12.1212300000000006 52.4480130000000031, '
                               '8.3302029999999991 52.8559529999999995, 8.7441569999999995 54.4759600000000006, '
                               '12.6848679999999998 54.0642660000000035, 12.1212300000000006 52.4480130000000031))')
-    coverage = loads(data_set_meta_infos[2].coverage)
+    coverage = wkt.loads(data_set_meta_infos[2].coverage)
     assert coverage.almost_equals(expected_coverage)
     assert 'S1_SLC' == data_set_meta_infos[2].data_type
     assert '2018-06-03T05:33:07Z' == data_set_meta_infos[2].start_time
@@ -172,10 +172,10 @@ def test_locally_wrapped_mundi_meta_info_provider_query_non_local_s1():
     assert 3 == len(data_set_meta_infos)
 
     assert 'S1A_IW_SLC__1SDV_20180601T170037_20180601T170104_022166_0265B3_466C' == data_set_meta_infos[0].identifier
-    expected_coverage = loads('POLYGON ((9.1527709999999995 54.2447889999999973, '
+    expected_coverage = wkt.loads('POLYGON ((9.1527709999999995 54.2447889999999973, '
                               '13.1172269999999997 54.6578639999999965, 13.5328199999999992 53.0389899999999983, '
                               '9.7198080000000004 52.6297950000000014, 9.1527709999999995 54.2447889999999973))')
-    coverage = loads(data_set_meta_infos[0].coverage)
+    coverage = wkt.loads(data_set_meta_infos[0].coverage)
     assert coverage.almost_equals(expected_coverage)
     assert 'S1_SLC' == data_set_meta_infos[0].data_type
     assert '2018-06-01T17:00:37Z' == data_set_meta_infos[0].start_time
@@ -218,14 +218,14 @@ def test_mundi_meta_info_provider_query_s2():
     assert 2 == len(data_set_meta_infos)
 
     assert 'S2B_MSIL1C_20180602T104019_N0206_R008_T32UNE_20180602T132118' == data_set_meta_infos[0].identifier
-    expected_coverage = loads('POLYGON ((10.3882277619999996 54.1384156120000029, '
+    expected_coverage = wkt.loads('POLYGON ((10.3882277619999996 54.1384156120000029, '
                               '10.3173421249999997 54.0163176499999977, 10.2348201129999996 53.8730417960000025, '
                               '10.1528176469999991 53.7297406859999995, 10.0714324099999999 53.5864079979999985, '
                               '9.9905949619999994 53.4430542019999990, 9.9101521629999993 53.2996597570000006, '
                               '9.8301509550000006 53.1562272170000014, 9.8297230889999998 53.1554540790000019, '
                               '8.9997008679999997 53.1611735449999969, 8.9996937989999992 54.1481041039999980, '
                               '10.3882277619999996 54.1384156120000029))')
-    coverage = loads(data_set_meta_infos[0].coverage)
+    coverage = wkt.loads(data_set_meta_infos[0].coverage)
     assert coverage.almost_equals(expected_coverage)
 
     assert 'S2_L1C' == data_set_meta_infos[0].data_type
@@ -233,7 +233,7 @@ def test_mundi_meta_info_provider_query_s2():
     assert '2018-06-02T10:40:19Z' == data_set_meta_infos[0].end_time
 
     assert 'S2A_MSIL1C_20180604T103021_N0206_R108_T32UNE_20180604T141551' == data_set_meta_infos[1].identifier
-    expected_coverage = loads('POLYGON ((9.5329991839999995 54.1443829669999985, '
+    expected_coverage = wkt.loads('POLYGON ((9.5329991839999995 54.1443829669999985, '
                               '9.6393092639999995 54.1279838920000032, 9.7303900619999997 54.1138008249999984, '
                               '9.7304462029999996 54.1139137250000033, 9.7459873600000009 54.1115134209999979, '
                               '9.7459783400000006 54.1114953069999984, 9.7461166410000004 54.1114721849999967, '
@@ -246,7 +246,7 @@ def test_mundi_meta_info_provider_query_s2():
                               '10.4515281689999995 53.9901149660000002, 10.6729949840000007 53.9495901889999985, '
                               '10.6415649559999999 53.1498598900000019, 8.9997008679999997 53.1611735449999969, '
                               '8.9996937989999992 54.1481041039999980, 9.5329991839999995 54.1443829669999985))')
-    coverage = loads(data_set_meta_infos[1].coverage)
+    coverage = wkt.loads(data_set_meta_infos[1].coverage)
     assert coverage.almost_equals(expected_coverage)
     assert 'S2_L1C' == data_set_meta_infos[1].data_type
     assert '2018-06-04T10:30:21Z' == data_set_meta_infos[1].start_time
@@ -263,30 +263,30 @@ def test_mundi_meta_info_provider_query_s1():
     assert 3 == len(data_set_meta_infos)
 
     assert 'S1A_IW_SLC__1SDV_20180601T170037_20180601T170104_022166_0265B3_466C' == data_set_meta_infos[0].identifier
-    expected_coverage = loads('POLYGON ((9.1527709999999995 54.2447889999999973, '
+    expected_coverage = wkt.loads('POLYGON ((9.1527709999999995 54.2447889999999973, '
                               '13.1172269999999997 54.6578639999999965, 13.5328199999999992 53.0389899999999983, '
                               '9.7198080000000004 52.6297950000000014, 9.1527709999999995 54.2447889999999973))')
-    coverage = loads(data_set_meta_infos[0].coverage)
+    coverage = wkt.loads(data_set_meta_infos[0].coverage)
     assert coverage.almost_equals(expected_coverage)
     assert 'S1_SLC' == data_set_meta_infos[0].data_type
     assert '2018-06-01T17:00:37Z' == data_set_meta_infos[0].start_time
     assert '2018-06-01T17:00:37Z' == data_set_meta_infos[0].end_time
 
     assert 'S1B_IW_SLC__1SDV_20180602T054039_20180602T054107_011190_014887_B851' == data_set_meta_infos[1].identifier
-    expected_coverage = loads('POLYGON ((10.0823180000000008 52.4006839999999983, '
+    expected_coverage = wkt.loads('POLYGON ((10.0823180000000008 52.4006839999999983, '
                               '6.2640330000000004 52.8124690000000001, 6.6777379999999997 54.4328689999999966, '
                               '10.6465929999999993 54.0172839999999965, 10.0823180000000008 52.4006839999999983))')
-    coverage = loads(data_set_meta_infos[1].coverage)
+    coverage = wkt.loads(data_set_meta_infos[1].coverage)
     assert coverage.almost_equals(expected_coverage)
     assert 'S1_SLC' == data_set_meta_infos[1].data_type
     assert '2018-06-02T05:40:39Z' == data_set_meta_infos[1].start_time
     assert '2018-06-02T05:40:39Z' == data_set_meta_infos[1].end_time
 
     assert 'S1A_IW_SLC__1SDV_20180603T053307_20180603T053334_022188_026669_A432' == data_set_meta_infos[2].identifier
-    expected_coverage = loads('POLYGON ((12.1212300000000006 52.4480130000000031, '
+    expected_coverage = wkt.loads('POLYGON ((12.1212300000000006 52.4480130000000031, '
                               '8.3302029999999991 52.8559529999999995, 8.7441569999999995 54.4759600000000006, '
                               '12.6848679999999998 54.0642660000000035, 12.1212300000000006 52.4480130000000031))')
-    coverage = loads(data_set_meta_infos[2].coverage)
+    coverage = wkt.loads(data_set_meta_infos[2].coverage)
     assert coverage.almost_equals(expected_coverage)
     assert 'S1_SLC' == data_set_meta_infos[2].data_type
     assert '2018-06-03T05:33:07Z' == data_set_meta_infos[2].start_time
@@ -311,10 +311,10 @@ def test_mundi_meta_info_provider_query_non_local_s1():
     assert 3 == len(data_set_meta_infos)
 
     assert 'S1A_IW_SLC__1SDV_20180601T170037_20180601T170104_022166_0265B3_466C' == data_set_meta_infos[0].identifier
-    expected_coverage = loads('POLYGON ((9.1527709999999995 54.2447889999999973, '
+    expected_coverage = wkt.loads('POLYGON ((9.1527709999999995 54.2447889999999973, '
                               '13.1172269999999997 54.6578639999999965, 13.5328199999999992 53.0389899999999983, '
                               '9.7198080000000004 52.6297950000000014, 9.1527709999999995 54.2447889999999973))')
-    coverage = loads(data_set_meta_infos[0].coverage)
+    coverage = wkt.loads(data_set_meta_infos[0].coverage)
     assert coverage.almost_equals(expected_coverage)
     assert 'S1_SLC' == data_set_meta_infos[0].data_type
     assert '2018-06-01T17:00:37Z' == data_set_meta_infos[0].start_time
