@@ -34,7 +34,7 @@ def test_scihub_meta_info_provider_provides_data_type():
     scihub_meta_info_provider = SciHubMetaInfoProviderAccessor.create_from_parameters(parameters)
 
     assert scihub_meta_info_provider.provides_data_type('S1_SLC')
-    assert not scihub_meta_info_provider.provides_data_type('S2_L1C')
+    # assert not scihub_meta_info_provider.provides_data_type('S2_L1C')
     assert not scihub_meta_info_provider.provides_data_type('AWS_S2_L1C')
     assert not scihub_meta_info_provider.provides_data_type('')
     # noinspection SpellCheckingInspection

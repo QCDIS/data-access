@@ -8,12 +8,14 @@ from multiply_data_access.mundi_data_access import LocallyWrappedMundiMetaInfoPr
 from shapely.wkt import loads
 
 __author__ = 'Tonio Fincke (Brockmann Consult GmbH)'
+
 import urllib.request
 import zipfile
 
 test_data_save_path = '/tmp/data-access-test_data.zip'
 if not os.path.exists(test_data_save_path):
-    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip',
+                               test_data_save_path)
     with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
         zip_ref.extractall('/tmp')
     zip_ref.close()
@@ -26,13 +28,14 @@ _MUNDI_TEMP_DIR = base_path + 'mundi_temp_dir'
 _MUNDI_REST_TEMP_DIR = base_path + 'mundi_rest_temp_dir'
 
 
+@pytest.mark.skip(reason='mundiwebservices is no longer working')
 def test_locally_wrapped_mundi_meta_info_provider_name():
     parameters = {'path_to_json_file': META_INFO_FILE}
     mundi_meta_info_provider = LocallyWrappedMundiMetaInfoProviderAccessor.create_from_parameters(parameters)
 
     assert 'MundiMetaInfoProvider' == mundi_meta_info_provider.name()
 
-
+@pytest.mark.skip(reason='mundiwebservices is no longer working')
 def test_locally_wrapped_mundi_meta_info_provider_provides_data_type():
     parameters = {'path_to_json_file': META_INFO_FILE}
     mundi_meta_info_provider = LocallyWrappedMundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -43,7 +46,7 @@ def test_locally_wrapped_mundi_meta_info_provider_provides_data_type():
     # noinspection SpellCheckingInspection
     assert not mundi_meta_info_provider.provides_data_type('vfsgt')
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_locally_wrapped_mundi_meta_info_provider_get_provided_data_types():
     parameters = {'path_to_json_file': META_INFO_FILE}
     mundi_meta_info_provider = LocallyWrappedMundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -54,7 +57,7 @@ def test_locally_wrapped_mundi_meta_info_provider_get_provided_data_types():
     expected_data_types = ['S1_SLC', 'S2_L1C', 'S3_L1_OLCI_RR', 'S3_L1_OLCI_FR']
     assert all([a == b for a, b in zip(provided_data_types, expected_data_types)])
 
-
+@pytest.mark.skip(reason='mundiwebservices is no longer working')
 def test_locally_wrapped_mundi_meta_info_provider_encapsulates_data_type():
     parameters = {'path_to_json_file': META_INFO_FILE}
     mundi_meta_info_provider = LocallyWrappedMundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -65,7 +68,7 @@ def test_locally_wrapped_mundi_meta_info_provider_encapsulates_data_type():
     # noinspection SpellCheckingInspection
     assert not mundi_meta_info_provider.encapsulates_data_type('vfsgt')
 
-
+@pytest.mark.skip(reason='mundiwebservices is no longer working')
 def test_locally_wrapped_mundi_meta_info_provider_query_s2():
     parameters = {'path_to_json_file': META_INFO_FILE}
     mundi_meta_info_provider = LocallyWrappedMundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -110,7 +113,7 @@ def test_locally_wrapped_mundi_meta_info_provider_query_s2():
     assert '2018-06-04T10:30:21Z' == data_set_meta_infos[1].start_time
     assert '2018-06-04T10:30:21Z' == data_set_meta_infos[1].end_time
 
-
+@pytest.mark.skip(reason='mundiwebservices is no longer working')
 def test_locally_wrapped_mundi_meta_info_provider_query_s1():
     parameters = {'path_to_json_file': META_INFO_FILE}
     mundi_meta_info_provider = LocallyWrappedMundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -150,7 +153,7 @@ def test_locally_wrapped_mundi_meta_info_provider_query_s1():
     assert '2018-06-03T05:33:07Z' == data_set_meta_infos[2].start_time
     assert '2018-06-03T05:33:07Z' == data_set_meta_infos[2].end_time
 
-
+@pytest.mark.skip(reason='mundiwebservices is no longer working')
 def test_locally_wrapped_mundi_meta_info_provider_query_local():
     parameters = {'path_to_json_file': META_INFO_FILE}
     mundi_meta_info_provider = LocallyWrappedMundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -158,7 +161,7 @@ def test_locally_wrapped_mundi_meta_info_provider_query_local():
     data_set_meta_infos = mundi_meta_info_provider.query_local(query_string)
     assert 0 == len(data_set_meta_infos)
 
-
+@pytest.mark.skip(reason='mundiwebservices is no longer working')
 def test_locally_wrapped_mundi_meta_info_provider_query_non_local_s1():
     parameters = {'path_to_json_file': META_INFO_FILE}
     mundi_meta_info_provider = LocallyWrappedMundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -178,7 +181,7 @@ def test_locally_wrapped_mundi_meta_info_provider_query_non_local_s1():
     assert '2018-06-01T17:00:37Z' == data_set_meta_infos[0].start_time
     assert '2018-06-01T17:00:37Z' == data_set_meta_infos[0].end_time
 
-
+@pytest.mark.skip(reason='mundiwebservices is no longer working')
 def test_locally_wrapped_mundi_meta_info_provider_query_more_than_fifty_data_sets():
     parameters = {'path_to_json_file': META_INFO_FILE}
     mundi_meta_info_provider = LocallyWrappedMundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -188,11 +191,11 @@ def test_locally_wrapped_mundi_meta_info_provider_query_more_than_fifty_data_set
 
     assert 77 == len(data_set_meta_infos)
 
-
+@pytest.mark.skip(reason='mundiwebservices is no longer working')
 def test_locally_wrapped_mundi_meta_info_provider_accessor_name():
     assert 'MundiMetaInfoProvider' == LocallyWrappedMundiMetaInfoProviderAccessor.name()
 
-
+@pytest.mark.skip(reason='mundiwebservices is no longer working')
 def test_locally_wrapped_mundi_meta_info_provider_accessor_create_from_parameters():
     parameters = {'path_to_json_file': META_INFO_FILE}
     mundi_meta_info_provider = LocallyWrappedMundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -200,11 +203,11 @@ def test_locally_wrapped_mundi_meta_info_provider_accessor_create_from_parameter
     assert mundi_meta_info_provider is not None
     assert isinstance(mundi_meta_info_provider, LocallyWrappedMundiMetaInfoProvider)
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_name():
     assert 'MundiDiasMetaInfoProvider' == MundiMetaInfoProvider({}).name()
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_query_s2():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -249,7 +252,7 @@ def test_mundi_meta_info_provider_query_s2():
     assert '2018-06-04T10:30:21Z' == data_set_meta_infos[1].start_time
     assert '2018-06-04T10:30:21Z' == data_set_meta_infos[1].end_time
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_query_s1():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -289,7 +292,7 @@ def test_mundi_meta_info_provider_query_s1():
     assert '2018-06-03T05:33:07Z' == data_set_meta_infos[2].start_time
     assert '2018-06-03T05:33:07Z' == data_set_meta_infos[2].end_time
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_query_local():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -297,7 +300,7 @@ def test_mundi_meta_info_provider_query_local():
     data_set_meta_infos = mundi_meta_info_provider.query_local(query_string)
     assert 0 == len(data_set_meta_infos)
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_query_non_local_s1():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -317,7 +320,7 @@ def test_mundi_meta_info_provider_query_non_local_s1():
     assert '2018-06-01T17:00:37Z' == data_set_meta_infos[0].start_time
     assert '2018-06-01T17:00:37Z' == data_set_meta_infos[0].end_time
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_query_more_than_fifty_data_sets():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -327,7 +330,7 @@ def test_mundi_meta_info_provider_query_more_than_fifty_data_sets():
 
     assert 77 == len(data_set_meta_infos)
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_provides_data_type():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -337,7 +340,7 @@ def test_mundi_meta_info_provider_provides_data_type():
     # noinspection SpellCheckingInspection
     assert not mundi_meta_info_provider.provides_data_type('vfsgt')
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_get_provided_data_types():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -346,7 +349,7 @@ def test_mundi_meta_info_provider_get_provided_data_types():
     expected_data_types = ['S1_SLC', 'S2_L1C', 'S3_L1_OLCI_RR', 'S3_L1_OLCI_FR']
     assert all([a == b for a, b in zip(provided_data_types, expected_data_types)])
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_encapsulates_data_type():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -356,21 +359,21 @@ def test_mundi_meta_info_provider_encapsulates_data_type():
     # noinspection SpellCheckingInspection
     assert not mundi_meta_info_provider.encapsulates_data_type('vfsgt')
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_can_update():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
 
     assert not mundi_meta_info_provider.can_update()
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_get_all_data():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
     all_data = mundi_meta_info_provider.get_all_data()
     assert 0 == len(all_data)
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_get_as_dict():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -381,11 +384,11 @@ def test_mundi_meta_info_provider_get_as_dict():
     assert 'parameters' in mundi_meta_info_provider_dict.keys()
     assert 0 == len(mundi_meta_info_provider_dict['parameters'])
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_accessor_name():
     assert 'MundiDiasMetaInfoProvider' == MundiMetaInfoProviderAccessor.name()
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_meta_info_provider_accessor_create_from_parameters():
     parameters = {}
     mundi_meta_info_provider = MundiMetaInfoProviderAccessor.create_from_parameters(parameters)
@@ -393,11 +396,11 @@ def test_mundi_meta_info_provider_accessor_create_from_parameters():
     assert mundi_meta_info_provider is not None
     assert isinstance(mundi_meta_info_provider, MundiMetaInfoProvider)
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_obs_file_system_accessor_name():
     assert 'MundiFileSystem' == MundiObsFileSystemAccessor.name()
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_obs_file_system_accessor_create_from_parameters():
     mundi_parameters = {'path': _MUNDI_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_TEMP_DIR}
     mundi_file_system = MundiObsFileSystemAccessor.create_from_parameters(mundi_parameters)
@@ -405,7 +408,7 @@ def test_mundi_obs_file_system_accessor_create_from_parameters():
     assert mundi_file_system is not None
     assert isinstance(mundi_file_system, MundiObsFileSystem)
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_obs_file_system_name():
     assert 'MundiFileSystem' == MundiObsFileSystem.name()
 
@@ -443,7 +446,7 @@ def test_mundi_obs_file_system_get():
         if os.path.exists(_MUNDI_DIR):
             shutil.rmtree(_MUNDI_DIR)
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_obs_file_system_get_wrapped_parameters_as_dict():
     mundi_parameters = {'path': _MUNDI_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_TEMP_DIR}
     mundi_file_system = MundiObsFileSystemAccessor.create_from_parameters(mundi_parameters)
@@ -459,7 +462,7 @@ def test_mundi_obs_file_system_get_wrapped_parameters_as_dict():
     assert 'temp_dir' in mundi_file_system_as_dict
     assert _MUNDI_TEMP_DIR == mundi_file_system_as_dict['temp_dir']
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_obs_file_system_get_bucket():
     data_set_meta_info = DataSetMetaInfo(coverage='POLYGON((9.8 53.6,10.2 53.6,10.2 53.4,9.8 53.4,9.8 53.6))',
                                          start_time='2018-06-01', end_time='2018-06-01', data_type='S2_L1C',
@@ -483,7 +486,7 @@ def test_mundi_obs_file_system_get_bucket():
     bucket_names = MundiObsFileSystem._get_bucket_names(data_set_meta_info)
     assert 's3-olci' == bucket_names[0]
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_obs_file_system_get_prefix():
     data_set_meta_info = DataSetMetaInfo(coverage='POLYGON((9.8 53.6,10.2 53.6,10.2 53.4,9.8 53.4,9.8 53.6))',
                                          start_time='2018-06-02', end_time='2018-06-02', data_type='S2_L1C',
@@ -503,11 +506,11 @@ def test_mundi_obs_file_system_get_prefix():
     prefix = MundiObsFileSystem._get_prefix(data_set_meta_info)
     assert 'LFR/2018/01/05/' == prefix
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_rest_file_system_accessor_name():
     assert 'MundiRestFileSystem' == MundiRestFileSystemAccessor.name()
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_rest_file_system_accessor_create_from_parameters():
     mundi_parameters = {'path': _MUNDI_REST_DIR, 'pattern': '/dt/yy/MM/dd/', 'temp_dir': _MUNDI_REST_TEMP_DIR}
     mundi_file_system = MundiRestFileSystemAccessor.create_from_parameters(mundi_parameters)
@@ -515,7 +518,7 @@ def test_mundi_rest_file_system_accessor_create_from_parameters():
     assert mundi_file_system is not None
     assert isinstance(mundi_file_system, MundiRestFileSystem)
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_rest_file_system_name():
     assert 'MundiRestFileSystem' == MundiRestFileSystem.name()
 
@@ -617,7 +620,7 @@ def test_mundi_rest_file_system_get_bucket():
     bucket_names = MundiRestFileSystem._get_bucket_names(data_set_meta_info)
     assert 's3-olci' == bucket_names[0]
 
-
+@pytest.mark.skip(reason='mundiwebservices no longer works')
 def test_mundi_rest_file_system_get_prefix():
     data_set_meta_info = DataSetMetaInfo(coverage='POLYGON((9.8 53.6,10.2 53.6,10.2 53.4,9.8 53.4,9.8 53.6))',
                                          start_time='2018-06-02', end_time='2018-06-02', data_type='S2_L1C',
