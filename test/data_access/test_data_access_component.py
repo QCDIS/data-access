@@ -8,7 +8,19 @@ import shutil
 
 __author__ = "Tonio Fincke (Brockmann Consult GmbH)"
 
-PATH_TO_YAML_FILE = './test/test_data/test_data_stores.yml'
+import urllib.request
+import zipfile
+
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
+
+PATH_TO_YAML_FILE = base_path + 'test_data_stores.yml'
 
 
 def test_data_access_read_data_stores():
@@ -21,12 +33,12 @@ def test_data_access_read_data_stores():
 
 
 def test_put_data_store():
-    path_to_yaml_file_2 = './test/test_data/test_data_stores_2.yml'
+    path_to_yaml_file_2 = base_path + 'test_data_stores_2.yml'
     shutil.copyfile(PATH_TO_YAML_FILE, path_to_yaml_file_2)
     try:
         data_access_component = DataAccessComponent()
-        local_file_system = LocalFileSystem('./test/test_data/', '/yy/dt/dd/')
-        json_meta_info_provider = JsonMetaInfoProvider('./test/test_data/test_meta_info.json', 'TYPE_A,TYPE_B,TYPE_C')
+        local_file_system = LocalFileSystem(base_path + '', '/yy/dt/dd/')
+        json_meta_info_provider = JsonMetaInfoProvider(base_path + 'test_meta_info.json', 'TYPE_A,TYPE_B,TYPE_C')
         data_store = DataStore(local_file_system, json_meta_info_provider, 'a_test')
         data_access_component._put_data_store(data_store, path_to_yaml_file_2)
 
@@ -40,13 +52,13 @@ def test_put_data_store():
 
 
 def test_write_data_store_as_dict():
-    path_to_yaml_file_2 = './test/test_data/test_data_stores_3.yml'
+    path_to_yaml_file_2 = base_path + 'test_data_stores_3.yml'
     shutil.copyfile(PATH_TO_YAML_FILE, path_to_yaml_file_2)
     try:
         data_access_component = DataAccessComponent()
-        file_system_parameters = {'path': './test/test_data/', 'pattern': '/yy/dt/dd/'}
+        file_system_parameters = {'path': base_path + '', 'pattern': '/yy/dt/dd/'}
         file_system_as_dict = {'type': 'LocalFileSystem', 'parameters': file_system_parameters}
-        meta_info_provider_parameters = {'path_to_json_file': './test/test_data/test_meta_info.json'}
+        meta_info_provider_parameters = {'path_to_json_file': base_path + 'test_meta_info.json'}
         meta_info_provider_as_dict = {'type': 'JsonMetaInfoProvider', 'parameters': meta_info_provider_parameters}
         data_store_as_dict = {'FileSystem': file_system_as_dict, 'MetaInfoProvider': meta_info_provider_as_dict,
                               'Id': 'for_testing'}
@@ -64,13 +76,13 @@ def test_write_data_store_as_dict():
 
 
 def test_write_data_store_as_dict_to_empty_file():
-    path_to_empty_yaml_file = './test/test_data/test_data_stores_4.yml'
+    path_to_empty_yaml_file = base_path + 'test_data_stores_4.yml'
     open(path_to_empty_yaml_file, 'w')
     try:
         data_access_component = DataAccessComponent()
-        file_system_parameters = {'path': './test/test_data/', 'pattern': '/yy/dt/dd/'}
+        file_system_parameters = {'path': base_path + '', 'pattern': '/yy/dt/dd/'}
         file_system_as_dict = {'type': 'LocalFileSystem', 'parameters': file_system_parameters}
-        meta_info_provider_parameters = {'path_to_json_file': './test/test_data/test_meta_info.json'}
+        meta_info_provider_parameters = {'path_to_json_file': base_path + 'test_meta_info.json'}
         meta_info_provider_as_dict = {'type': 'JsonMetaInfoProvider', 'parameters': meta_info_provider_parameters}
         data_store_as_dict = {'FileSystem': file_system_as_dict, 'MetaInfoProvider': meta_info_provider_as_dict,
                               'Id': 'for_testing'}
@@ -87,9 +99,9 @@ def test_write_data_store_as_dict_to_empty_file():
 
 def test_create_local_data_store():
     data_access_component = DataAccessComponent()
-    data_access_component.create_local_data_store(base_dir='./test/test_data/',
-                                                  meta_info_file='./test/test_data/meta_store.json',
-                                                  base_pattern='mm/dt/', id='cgfsvt',
+    data_access_component.create_local_data_store(base_dir=base_path + '',
+                                                  meta_info_file=base_path + 'meta_store.json',
+                                                  base_pattern='MM/dt/', id='cgfsvt',
                                                   supported_data_types='TYPE_A,TYPE_B')
 
 

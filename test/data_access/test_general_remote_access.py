@@ -7,9 +7,23 @@ from multiply_data_access.data_access import DataSetMetaInfo
 from multiply_data_access.general_remote_access import HttpFileSystem, HttpFileSystemAccessor, \
     HttpMetaInfoProvider, HttpMetaInfoProviderAccessor
 
-PATH_TO_JSON_FILE = './test/test_data/modis_store.json'
-PATH_TO_EMUS_STORE = './test/test_data/empty_store.json'
-TEMP_DIR = './test/test_data/'
+from shapely import wkt
+
+import urllib.request
+import zipfile
+
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
+
+PATH_TO_JSON_FILE = base_path + 'modis_store.json'
+PATH_TO_EMUS_STORE = base_path + 'empty_store.json'
+TEMP_DIR = base_path + ''
 ELES_TEST_URL = 'http://www2.geog.ucl.ac.uk/~ucfafyi/eles/'
 EMUS_TEST_URL = 'http://www2.geog.ucl.ac.uk/~ucfafyi/emus/'
 WV_EMU_TEST_URL = 'http://www2.geog.ucl.ac.uk/~ucfafyi/emus/old_emus/'
@@ -60,8 +74,8 @@ def test_query_wrapped_meta_info_provider_eles():
     data_set_meta_infos = provider._query_wrapped_meta_info_provider(query_string)
 
     assert 1 == len(data_set_meta_infos)
-    expected_aster_coverage = loads('POLYGON((-7. 42., -7. 43., -6. 43., -6. 42., -7. 42.))')
-    aster_coverage = loads(data_set_meta_infos[0].coverage)
+    expected_aster_coverage = wkt.loads('POLYGON((-7. 42., -7. 43., -6. 43., -6. 42., -7. 42.))')
+    aster_coverage = wkt.loads(data_set_meta_infos[0].coverage)
     assert expected_aster_coverage.almost_equals(aster_coverage)
     assert '' == data_set_meta_infos[0].start_time
     assert '' == data_set_meta_infos[0].end_time
@@ -158,7 +172,7 @@ def test_notify_copied_to_local():
     parameters = {'path': TEMP_DIR, 'pattern': '', 'url': EMUS_TEST_URL, 'temp_dir': TEMP_DIR}
     file_system = HttpFileSystemAccessor.create_from_parameters(parameters)
 
-    path_to_file = './test/test_data/some_file'
+    path_to_file = base_path + 'some_file'
     try:
         open(path_to_file, 'w+')
         data_set_meta_info = DataSetMetaInfo('ctfvgb', '2017-09-04', '2017-09-04', 'some_format',

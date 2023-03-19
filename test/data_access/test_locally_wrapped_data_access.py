@@ -12,8 +12,21 @@ import shutil
 
 __author__ = "Tonio Fincke (Brockmann Consult GmbH)"
 
-path_to_json_file = './test/test_data/test_meta_info.json'
-path_to_wrapped_file = './test/test_data/a_wrapped_directory/some_wrapped_file'
+
+import urllib.request
+import zipfile
+
+test_data_save_path = '/tmp/data-access-test_data.zip'
+if not os.path.exists(test_data_save_path):
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
+        zip_ref.extractall('/tmp')
+    zip_ref.close()
+base_path = '/tmp/test_data/'
+
+
+path_to_json_file = base_path + 'test_meta_info.json'
+path_to_wrapped_file = base_path + 'a_wrapped_directory/some_wrapped_file'
 
 
 class TestWrappedMetaInfoProvider(LocallyWrappedMetaInfoProvider):
@@ -229,14 +242,14 @@ class TestWrappedFileSystem(LocallyWrappedFileSystem):
 
 
 def test_locally_wrappd_file_system_create():
-    parameters = {'some_parameter': 'something', 'path': './test/test_data/', 'pattern': '/dt/yy/mm/dd/'}
+    parameters = {'some_parameter': 'something', 'path': base_path + '', 'pattern': '/dt/yy/MM/dd/'}
     wrapped_file_system = TestWrappedFileSystem(parameters)
 
     assert wrapped_file_system is not None
 
 
 def test_locally_wrapped_file_system_get_name():
-    parameters = {'some_parameter': 'something', 'path': './test/test_data/', 'pattern': '/dt/yy/mm/dd/'}
+    parameters = {'some_parameter': 'something', 'path': base_path + '', 'pattern': '/dt/yy/MM/dd/'}
     wrapped_file_system = TestWrappedFileSystem(parameters)
 
     assert 'TestWrappedFileSystem' == wrapped_file_system.name()
@@ -244,7 +257,7 @@ def test_locally_wrapped_file_system_get_name():
 
 
 def test_wrapped_file_system_get_as_dict():
-    parameters = {'some_parameter': 'something', 'path': './test/test_data/', 'pattern': '/dt/yy/mm/dd/'}
+    parameters = {'some_parameter': 'something', 'path': base_path + '', 'pattern': '/dt/yy/MM/dd/'}
     wrapped_file_system = TestWrappedFileSystem(parameters)
 
     provider_as_dict = wrapped_file_system.get_as_dict()
@@ -257,9 +270,9 @@ def test_wrapped_file_system_get_as_dict():
     assert 'some_parameter' in provider_as_dict['parameters']
     assert 'something' == provider_as_dict['parameters']['some_parameter']
     assert 'path' in provider_as_dict['parameters']
-    assert './test/test_data/' == provider_as_dict['parameters']['path']
+    assert base_path + '' == provider_as_dict['parameters']['path']
     assert 'pattern' in provider_as_dict['parameters']
-    assert '/dt/yy/mm/dd/' == provider_as_dict['parameters']['pattern']
+    assert '/dt/yy/MM/dd/' == provider_as_dict['parameters']['pattern']
 
 
 class TypeXValidator(DataValidator):
@@ -287,7 +300,7 @@ class TypeXValidator(DataValidator):
 
 def test_wrapped_file_system_get():
     try:
-        parameters = {'some_parameter': 'something', 'path': './test/test_data/', 'pattern': '/dt/yy/'}
+        parameters = {'some_parameter': 'something', 'path': base_path + '', 'pattern': '/dt/yy/'}
         wrapped_file_system = TestWrappedFileSystem(parameters)
         add_validator(TypeXValidator())
 
@@ -297,7 +310,7 @@ def test_wrapped_file_system_get():
         assert '2017-01-31' == file_refs[0].start_time
         assert '2017-02-01' == file_refs[0].end_time
         assert 'unknown mime type' == file_refs[0].mime_type
-        assert './test/test_data/TYPE_X/2017/some_wrapped_file'
+        assert base_path + 'TYPE_X/2017/some_wrapped_file'
     finally:
-        if os.path.exists('./test/test_data/TYPE_X'):
-            shutil.rmtree('./test/test_data/TYPE_X')
+        if os.path.exists(base_path + 'TYPE_X'):
+            shutil.rmtree(base_path + 'TYPE_X')

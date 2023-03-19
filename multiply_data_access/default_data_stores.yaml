@@ -2,7 +2,7 @@
     FileSystem:
       parameters:
         path: user_dir/data/
-        pattern: /dt/yy/mm/dd/
+        pattern: /dt/yy/MM/dd/
         temp_dir: user_dir/temp/aws_s2/
       type: AwsS2FileSystem
     Id: aws_s2
@@ -85,7 +85,7 @@
         username:
         password:
         path: user_dir/data/
-        pattern: /dt/yy/mm/dd/
+        pattern: /dt/yy/MM/dd/
     Id: modis_mcd43a1
     MetaInfoProvider:
       type: LpDaacMetaInfoProvider
@@ -99,7 +99,7 @@
         access_key_id:
         secret_access_key:
         path: user_dir/data/
-        pattern: /dt/yy/mm/dd/
+        pattern: /dt/yy/MM/dd/
     Id: Mundi
     MetaInfoProvider:
       type: MundiMetaInfoProvider
@@ -110,7 +110,7 @@
       type: LocalFileSystem
       parameters:
         path: user_dir/data/
-        pattern: /dt/yy/mm/dd/
+        pattern: /dt/yy/MM/dd/
     Id: S2L2
     MetaInfoProvider:
       type: JsonMetaInfoProvider
@@ -123,7 +123,7 @@
       parameters:
         temp_dir: user_dir/temp/scihub/
         path: user_dir/data/
-        pattern: /dt/yy/mm/dd/
+        pattern: /dt/yy/MM/dd/
         username:
         password:
     Id: SciHub
@@ -137,7 +137,7 @@
     FileSystem:
       parameters:
         path: /data/archive/
-        pattern: /dt/yy/mm/dd/
+        pattern: /dt/yy/MM/dd/
         temp_dir: /data/temp/creodias/
       type: CreoDiasFileSystem
     Id: CreoDias

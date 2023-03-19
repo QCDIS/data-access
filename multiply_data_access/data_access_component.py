@@ -141,7 +141,7 @@ class DataAccessComponent(object):
         :param data_store_id: The id of a data store. Can be None.
         """
         data_type = get_valid_type(path)
-        if data_type is '':
+        if not data_type:
             logging.info('Could not determine data type of data at {}. Will not add it to Data Access Component.'
                          .format(path))
             return
@@ -150,7 +150,7 @@ class DataAccessComponent(object):
                 if not data_store.provides_data_type(data_type):
                     logging.info(
                         'Data Store {} is not apt for data of type {}. Will not add it to Data Access Component.'
-                            .format(data_store_id, data_type))
+                        .format(data_store_id, data_type))
                     return
                 elif not data_store.can_put():
                     logging.info('Cannot put data into data store {}. Will not add it to Data Access Component.'.
@@ -225,7 +225,7 @@ class DataAccessComponent(object):
         for data_store in self._data_stores:
             if data_store.id in data_store_query_results:
                 for query_result in data_store_query_results[data_store.id]:
-                    logger.info(f'{int((count/num_query_results) * 100)}')
+                    logger.info(f'{int((count / num_query_results) * 100)}')
                     file_refs = data_store.get(query_result)
                     for file_ref in file_refs:
                         urls.append(file_ref.url)
@@ -244,7 +244,7 @@ class DataAccessComponent(object):
         for data_store in self._data_stores:
             for data_set_meta_info in data_set_meta_infos:
                 if data_store.provides_data_type(data_set_meta_info.data_type):
-                    logger.info(f'{int((count/num_query_results) * 100)}')
+                    logger.info(f'{int((count / num_query_results) * 100)}')
                     file_refs = data_store.get(data_set_meta_info)
                     for file_ref in file_refs:
                         urls.append(file_ref.url)
@@ -345,7 +345,7 @@ class DataAccessComponent(object):
     #
 
     def create_local_data_store(self, base_dir: Optional[str] = None, meta_info_file: Optional[str] = None,
-                                base_pattern: Optional[str] = '/dt/yy/mm/dd/', id: Optional[str] = None,
+                                base_pattern: Optional[str] = '/dt/yy/MM/dd/', id: Optional[str] = None,
                                 supported_data_types: Optional[str] = None):
         """
         Adds a a new local data store and saves it permanently. It will consist of a LocalFileSystem and a
@@ -358,7 +358,7 @@ class DataAccessComponent(object):
         folder. If not provided, an empty file will be created and filled with the data that match the base directory
         and the base pattern.
         :param base_pattern: A pattern that allows to create an order in the base directory. Available options are 'dt'
-        for the data type, 'yy' for the year, 'mm' for the month, and 'dd' for the day, arrangeable in any oder. If no
+        for the data type, 'yy' for the year, 'MM' for the month, and 'dd' for the day, arrangeable in any oder. If no
         pattern is given, all data will simply be written into the base directory.
         :param id: An identifier for the Data Store. If there already exists a Data Store with the name, an additional
         number will be added to the name.
