@@ -16,7 +16,6 @@ dependencies:
   - cxx-compiler
   - libgcc
   - libstdcxx-ng
-  - libgcc=5.2.0
   - lazrs-python
   - laspy
   - plyfile
