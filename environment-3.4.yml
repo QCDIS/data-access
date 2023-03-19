@@ -1,0 +1,36 @@
+name: multiply-data-access
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python>=3.8
+  - gdal=3.4
+  - libgdal
+  - pyproj
+  - pyyaml
+  - numpy
+  - scipy
+  - setuptools
+  - gcc=12.1.0
+  - cxx-compiler
+  - libgcc=5.2.0
+  - lazrs-python
+  - laspy
+  - plyfile
+  - beautifulsoup4
+  - lxml
+  - shapely
+  - pyshp
+  - pytest
+  - xarray
+  - netcdf4
+  - h5netcdf
+  - pip
+  - pip:
+      - .
+      - git+https://github.com/QCDIS/multiply-core.git
+
+
+
+
