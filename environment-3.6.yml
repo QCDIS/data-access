@@ -26,6 +26,7 @@ dependencies:
   - xarray
   - netcdf4
   - h5netcdf
+  - flake8
   - pip
   - pip:
       - .
