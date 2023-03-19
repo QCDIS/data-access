@@ -18,7 +18,7 @@ import shutil
 __author__ = "Tonio Fincke (Brockmann Consult GmbH)"
 
 _DATA_TYPE_PATTERN = 'dt'
-_DAY_PATTERN = 'DD'
+_DAY_PATTERN = 'dd'
 _MONTH_PATTERN = 'MM'
 _YEAR_PATTERN = 'yy'
 _ALLOWED_PATTERNS = [_DATA_TYPE_PATTERN, _YEAR_PATTERN, _MONTH_PATTERN, _DAY_PATTERN]
