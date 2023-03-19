@@ -61,7 +61,7 @@ class LocalFileSystem(FileSystem):
 
     @staticmethod
     def _validate_pattern(pattern: str) -> str:
-        if pattern is '':
+        if not pattern:
             return pattern
         if pattern is None:
             raise ValueError('No pattern provided')
@@ -201,7 +201,7 @@ class LocalFileSystem(FileSystem):
             for found_file in found_files:
                 found_file = found_file.replace('\\', '/')
                 data_type = data_validation.get_valid_type(found_file)
-                if data_type is not '':
+                if data_type:
                     data_set_meta_info = get_data_set_meta_info(data_type, found_file)
                     if data_set_meta_info is not None:
                         data_set_meta_infos.append(data_set_meta_info)

@@ -141,7 +141,7 @@ class DataAccessComponent(object):
         :param data_store_id: The id of a data store. Can be None.
         """
         data_type = get_valid_type(path)
-        if data_type is '':
+        if not data_type:
             logging.info('Could not determine data type of data at {}. Will not add it to Data Access Component.'
                          .format(path))
             return
