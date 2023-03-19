@@ -150,7 +150,7 @@ class DataAccessComponent(object):
                 if not data_store.provides_data_type(data_type):
                     logging.info(
                         'Data Store {} is not apt for data of type {}. Will not add it to Data Access Component.'
-                            .format(data_store_id, data_type))
+                        .format(data_store_id, data_type))
                     return
                 elif not data_store.can_put():
                     logging.info('Cannot put data into data store {}. Will not add it to Data Access Component.'.
@@ -225,7 +225,7 @@ class DataAccessComponent(object):
         for data_store in self._data_stores:
             if data_store.id in data_store_query_results:
                 for query_result in data_store_query_results[data_store.id]:
-                    logger.info(f'{int((count/num_query_results) * 100)}')
+                    logger.info(f'{int((count / num_query_results) * 100)}')
                     file_refs = data_store.get(query_result)
                     for file_ref in file_refs:
                         urls.append(file_ref.url)
@@ -244,7 +244,7 @@ class DataAccessComponent(object):
         for data_store in self._data_stores:
             for data_set_meta_info in data_set_meta_infos:
                 if data_store.provides_data_type(data_set_meta_info.data_type):
-                    logger.info(f'{int((count/num_query_results) * 100)}')
+                    logger.info(f'{int((count / num_query_results) * 100)}')
                     file_refs = data_store.get(data_set_meta_info)
                     for file_ref in file_refs:
                         urls.append(file_ref.url)
