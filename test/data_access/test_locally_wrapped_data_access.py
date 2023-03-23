@@ -320,4 +320,4 @@ def test_beautiful_soup():
     url0 = 'http://py4e-data.dr-chuck.net/known_by_Cruz.html'
     url = url0
     html = urllib.request.urlopen(url).read()
-    soup = BeautifulSoup(html, "html.parser")
+    soup = BeautifulSoup(html, "html5lib")
