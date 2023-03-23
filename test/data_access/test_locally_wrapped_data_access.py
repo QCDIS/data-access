@@ -321,3 +321,4 @@ def test_beautiful_soup():
     url = url0
     html = urllib.request.urlopen(url).read()
     soup = BeautifulSoup(html, "html5lib")
+
