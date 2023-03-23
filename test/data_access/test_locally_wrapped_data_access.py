@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from multiply_core.observations import add_validator, DataValidator
 from multiply_core.util import get_mime_type, FileRef, get_time_from_string
 from multiply_data_access import DataSetMetaInfo
@@ -12,18 +13,17 @@ import shutil
 
 __author__ = "Tonio Fincke (Brockmann Consult GmbH)"
 
-
 import urllib.request
 import zipfile
 
 test_data_save_path = '/tmp/data-access-test_data.zip'
 if not os.path.exists(test_data_save_path):
-    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip', test_data_save_path)
+    urllib.request.urlretrieve('https://github.com/QCDIS/data-access/raw/master/test/test_data.zip',
+                               test_data_save_path)
     with zipfile.ZipFile(test_data_save_path, 'r') as zip_ref:
         zip_ref.extractall('/tmp')
     zip_ref.close()
 base_path = '/tmp/test_data/'
-
 
 path_to_json_file = base_path + 'test_meta_info.json'
 path_to_wrapped_file = base_path + 'a_wrapped_directory/some_wrapped_file'
@@ -314,3 +314,11 @@ def test_wrapped_file_system_get():
     finally:
         if os.path.exists(base_path + 'TYPE_X'):
             shutil.rmtree(base_path + 'TYPE_X')
+
+
+def test_beautiful_soup():
+    url0 = 'http://py4e-data.dr-chuck.net/known_by_Cruz.html'
+    url = url0
+    html = urllib.request.urlopen(url).read()
+    soup = BeautifulSoup(html, "html5lib")
+

@@ -21,6 +21,7 @@ dependencies:
   - plyfile
   - beautifulsoup4
   - lxml
+  - html5lib
   - shapely
   - pyshp
   - pytest
