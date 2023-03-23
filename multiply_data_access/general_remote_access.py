@@ -71,7 +71,7 @@ class HttpMetaInfoProvider(LocallyWrappedMetaInfoProvider):
         except requests.ConnectionError:
             logging.warning('Could not retrieve meta information from {} due to a connection error.'.format(self._url))
             return data_set_meta_infos
-        soup = BeautifulSoup(request.content, 'html5lib')
+        soup = BeautifulSoup(request.content, 'html.parser')
         links = soup.find_all('a')
 
         roi = self.get_roi_from_query_string(query_string)
@@ -144,7 +144,7 @@ class HttpFileSystem(LocallyWrappedFileSystem):
             return False
         content_type = urllib2.urlopen(url).info().get_content_type()
         if content_type == 'text/html':
-            soup = BeautifulSoup(request.content, 'html5lib')
+            soup = BeautifulSoup(request.content, 'html.parser')
             links = soup.find_all('a')
             file_names = [link['href'] for link in links
                           if not link['href'].startswith('?') and not link['href'].startswith('/')]
