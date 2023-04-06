@@ -76,20 +76,48 @@ class AwsS2FileSystem(LocallyWrappedFileSystem):
         time = start_time_as_datetime.strftime('%Y-%m-%d')
         aws_index = self._get_aws_index(data_set_meta_info.identifier)
         
-        try:
-            from sentinelhub.aws import AwsTileRequest
-            from sentinelhub import DataCollection
-            request = AwsTileRequest(data_collection=DataCollection.SENTINEL2_L1C,tile=tile_name, time=time, aws_index=aws_index,bands=bands, metafiles=metafiles, data_folder=self._temp_dir)
-        except:
-            from sentinelhub import AwsTileRequest
-            request = AwsTileRequest(tile=tile_name, time=time, aws_index=aws_index,bands=bands, metafiles=metafiles, data_folder=self._temp_dir)
-        
         year = start_time_as_datetime.year
         month = start_time_as_datetime.month
         day = start_time_as_datetime.day
-        logging.info('Downloading S2 Data from {}-{}-{}'.format(month, day, year))
-        request.save_data()
+        
+        # create file structure
         saved_dir = '{}/{},{}-{:02d}-{:02d},{}/'.format(self._temp_dir, tile_name, year, month, day, aws_index)
+        os.makedirs(saved_dir, exist_ok=True)
+        os.makedirs(saved_dir+'qi', exist_ok=True)
+        os.makedirs(saved_dir+'preview', exist_ok=True)
+        os.makedirs(saved_dir+'auxiliary', exist_ok=True)
+        
+        # download data
+        try:
+            # version >3.8.4
+            from sentinelhub import SHConfig
+            from sentinelhub.aws import AwsDownloadClient
+            config = SHConfig()
+            s3_client = AwsDownloadClient.get_s3_client(config)
+
+            url_key = 'tiles/' + data_set_meta_info.identifier
+            boto_params = {"RequestPayer": "requester"}
+            bucket_name='sentinel-s2-l1c'
+            all_files = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=url_key, **boto_params)["Contents"]        
+
+            for file in all_files:
+                out_path2 = saved_dir + file["Key"].split(data_set_meta_info.identifier)[1]
+                s3_client.download_file(Bucket=bucket_name, Key=file["Key"], Filename=out_path2, ExtraArgs=boto_params)
+        except:
+            try:
+                # version >3.5.0 & <3.8.4
+                from sentinelhub.aws import AwsTileRequest
+                from sentinelhub import DataCollection
+                request = AwsTileRequest(data_collection=DataCollection.SENTINEL2_L1C,tile=tile_name, time=time, 
+                                         aws_index=aws_index,bands=bands, metafiles=metafiles, data_folder=self._temp_dir)
+                request.save_data()
+            except:
+                # version <=3.5.0
+                from sentinelhub import AwsTileRequest
+                request = AwsTileRequest(tile=tile_name, time=time, aws_index=aws_index,bands=bands, metafiles=metafiles, data_folder=self._temp_dir)
+                request.save_data()
+        
+        # move downloaded file locally to data-archive
         new_dir = '{0}/{1}/{2}/{3}/{4}/{5}/{6}/{7}/'.format(self._temp_dir, tile_name[0:2], tile_name[2:3],
                                                             tile_name[3:5], year, month, day, aws_index)
         copy_tree(saved_dir, new_dir)
