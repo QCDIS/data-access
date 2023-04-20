@@ -79,6 +79,7 @@ class AwsS2FileSystem(LocallyWrappedFileSystem):
         year = start_time_as_datetime.year
         month = start_time_as_datetime.month
         day = start_time_as_datetime.day
+        logging.info('Downloaded S2 Data from {}-{}-{}'.format(month, day, year))
         
         # create file structure
         saved_dir = '{}/{},{}-{:02d}-{:02d},{}/'.format(self._temp_dir, tile_name, year, month, day, aws_index)
@@ -121,7 +122,8 @@ class AwsS2FileSystem(LocallyWrappedFileSystem):
         new_dir = '{0}/{1}/{2}/{3}/{4}/{5}/{6}/{7}/'.format(self._temp_dir, tile_name[0:2], tile_name[2:3],
                                                             tile_name[3:5], year, month, day, aws_index)
         copy_tree(saved_dir, new_dir)
-        logging.info('Downloaded S2 Data from {}-{}-{}'.format(month, day, year))
+        try:
+            shutil.rmtree(saved_dir)        
         return FileRef(new_dir, data_set_meta_info.start_time, data_set_meta_info.end_time, get_mime_type(new_dir))
 
     def _is_valid_identifier(self, path: str) -> bool:
