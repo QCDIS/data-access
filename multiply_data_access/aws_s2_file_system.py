@@ -123,7 +123,10 @@ class AwsS2FileSystem(LocallyWrappedFileSystem):
                                                             tile_name[3:5], year, month, day, aws_index)
         copy_tree(saved_dir, new_dir)
         try:
-            shutil.rmtree(saved_dir)        
+            shutil.rmtree(saved_dir) 
+        except:
+            pass
+                
         return FileRef(new_dir, data_set_meta_info.start_time, data_set_meta_info.end_time, get_mime_type(new_dir))
 
     def _is_valid_identifier(self, path: str) -> bool:
