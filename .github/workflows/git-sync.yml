@@ -16,7 +16,7 @@ jobs:
 
     - name: Check for changes
       run: |
-        if ! git diff --quiet upstream/main; then
+        if ! git diff --quiet upstream/master; then
           git checkout -b sync-with-upstream
           git merge upstream/main --no-edit
           git push origin sync-with-upstream
